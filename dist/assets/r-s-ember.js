@@ -20,6 +20,10 @@ define('r-s-ember/app', ['exports', 'ember', 'r-s-ember/resolver', 'ember-load-i
 
   (0, _emberLoadInitializers['default'])(App, _rSEmberConfigEnvironment['default'].modulePrefix);
 
+  DS.RESTAdapter.reopen({
+    url: '/rest/1'
+  });
+
   exports['default'] = App;
 });
 define('r-s-ember/components/app-version', ['exports', 'ember-cli-app-version/components/app-version', 'r-s-ember/config/environment'], function (exports, _emberCliAppVersionComponentsAppVersion, _rSEmberConfigEnvironment) {
@@ -204,9 +208,22 @@ define('r-s-ember/router', ['exports', 'ember', 'r-s-ember/config/environment'],
     location: _rSEmberConfigEnvironment['default'].locationType
   });
 
-  Router.map(function () {});
+  Router.map(function () {
+    this.route('recommend');
+  });
 
   exports['default'] = Router;
+});
+define('r-s-ember/routes/index', ['exports', 'ember'], function (exports, _ember) {
+	exports['default'] = _ember['default'].Route.extend({
+		model: function model() {
+			return ['red', 'green'];
+		}
+
+	});
+});
+define('r-s-ember/routes/recommend', ['exports', 'ember'], function (exports, _ember) {
+	exports['default'] = _ember['default'].Route.extend({});
 });
 define('r-s-ember/services/ajax', ['exports', 'ember-ajax/services/ajax'], function (exports, _emberAjaxServicesAjax) {
   Object.defineProperty(exports, 'default', {
@@ -222,7 +239,7 @@ define("r-s-ember/templates/application", ["exports"], function (exports) {
       meta: {
         "fragmentReason": {
           "name": "missing-wrapper",
-          "problems": ["multiple-nodes", "wrong-type"]
+          "problems": ["wrong-type"]
         },
         "revision": "Ember@2.5.1",
         "loc": {
@@ -232,7 +249,7 @@ define("r-s-ember/templates/application", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 4,
+            "line": 2,
             "column": 0
           }
         },
@@ -244,13 +261,6 @@ define("r-s-ember/templates/application", ["exports"], function (exports) {
       hasRendered: false,
       buildFragment: function buildFragment(dom) {
         var el0 = dom.createDocumentFragment();
-        var el1 = dom.createElement("h2");
-        dom.setAttribute(el1, "id", "title");
-        var el2 = dom.createTextNode("Welcome to Ember");
-        dom.appendChild(el1, el2);
-        dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n\n");
-        dom.appendChild(el0, el1);
         var el1 = dom.createComment("");
         dom.appendChild(el0, el1);
         var el1 = dom.createTextNode("\n");
@@ -259,10 +269,135 @@ define("r-s-ember/templates/application", ["exports"], function (exports) {
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
         var morphs = new Array(1);
-        morphs[0] = dom.createMorphAt(fragment, 2, 2, contextualElement);
+        morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+        dom.insertBoundary(fragment, 0);
         return morphs;
       },
-      statements: [["content", "outlet", ["loc", [null, [3, 0], [3, 10]]]]],
+      statements: [["content", "outlet", ["loc", [null, [1, 0], [1, 10]]]]],
+      locals: [],
+      templates: []
+    };
+  })());
+});
+define("r-s-ember/templates/index", ["exports"], function (exports) {
+  exports["default"] = Ember.HTMLBars.template((function () {
+    var child0 = (function () {
+      return {
+        meta: {
+          "fragmentReason": false,
+          "revision": "Ember@2.5.1",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 2,
+              "column": 1
+            },
+            "end": {
+              "line": 2,
+              "column": 58
+            }
+          },
+          "moduleName": "r-s-ember/templates/index.hbs"
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("Recommend Programs/Courses For me");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes() {
+          return [];
+        },
+        statements: [],
+        locals: [],
+        templates: []
+      };
+    })();
+    return {
+      meta: {
+        "fragmentReason": {
+          "name": "triple-curlies"
+        },
+        "revision": "Ember@2.5.1",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 3,
+            "column": 4
+          }
+        },
+        "moduleName": "r-s-ember/templates/index.hbs"
+      },
+      isEmpty: false,
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createElement("p");
+        dom.setAttribute(el1, "id", "takeToRecommend");
+        var el2 = dom.createTextNode("\n	");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var morphs = new Array(1);
+        morphs[0] = dom.createMorphAt(dom.childAt(fragment, [0]), 1, 1);
+        return morphs;
+      },
+      statements: [["block", "link-to", ["recommend"], [], 0, null, ["loc", [null, [2, 1], [2, 70]]]]],
+      locals: [],
+      templates: [child0]
+    };
+  })());
+});
+define("r-s-ember/templates/recommend", ["exports"], function (exports) {
+  exports["default"] = Ember.HTMLBars.template((function () {
+    return {
+      meta: {
+        "fragmentReason": {
+          "name": "missing-wrapper",
+          "problems": ["empty-body"]
+        },
+        "revision": "Ember@2.5.1",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 1,
+            "column": 0
+          }
+        },
+        "moduleName": "r-s-ember/templates/recommend.hbs"
+      },
+      isEmpty: true,
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes() {
+        return [];
+      },
+      statements: [],
       locals: [],
       templates: []
     };
@@ -300,7 +435,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("r-s-ember/app")["default"].create({"name":"r-s-ember","version":"0.0.0+b4c73da8"});
+  require("r-s-ember/app")["default"].create({"name":"r-s-ember","version":"0.0.0+0c5b11e8"});
 }
 
 /* jshint ignore:end */
