@@ -300,7 +300,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("r-s-ember/app")["default"].create({"name":"r-s-ember","version":"0.0.0+c0d76bfd"});
+  require("r-s-ember/app")["default"].create({"name":"r-s-ember","version":"0.0.0+b4c73da8"});
 }
 
 /* jshint ignore:end */
