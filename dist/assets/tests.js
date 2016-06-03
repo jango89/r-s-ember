@@ -1,10 +1,28 @@
+define('r-s-ember/tests/adapters/application.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | adapters/application.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'adapters/application.js should pass jshint.');
+  });
+});
 define('r-s-ember/tests/app.jshint', ['exports'], function (exports) {
   'use strict';
 
   QUnit.module('JSHint | app.js');
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
-    assert.ok(false, 'app.js should pass jshint.\napp.js: line 18, col 1, \'DS\' is not defined.\n\n1 error');
+    assert.ok(true, 'app.js should pass jshint.');
+  });
+});
+define('r-s-ember/tests/controllers/recommend.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | controllers/recommend.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'controllers/recommend.js should pass jshint.');
   });
 });
 define('r-s-ember/tests/helpers/destroy-app', ['exports', 'ember'], function (exports, _ember) {
@@ -102,6 +120,15 @@ define('r-s-ember/tests/helpers/start-app.jshint', ['exports'], function (export
     assert.ok(true, 'helpers/start-app.js should pass jshint.');
   });
 });
+define('r-s-ember/tests/models/recommend.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | models/recommend.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'models/recommend.js should pass jshint.');
+  });
+});
 define('r-s-ember/tests/resolver.jshint', ['exports'], function (exports) {
   'use strict';
 
@@ -120,6 +147,15 @@ define('r-s-ember/tests/router.jshint', ['exports'], function (exports) {
     assert.ok(true, 'router.js should pass jshint.');
   });
 });
+define('r-s-ember/tests/routes/error.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | routes/error.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'routes/error.js should pass jshint.');
+  });
+});
 define('r-s-ember/tests/routes/index.jshint', ['exports'], function (exports) {
   'use strict';
 
@@ -135,7 +171,25 @@ define('r-s-ember/tests/routes/recommend.jshint', ['exports'], function (exports
   QUnit.module('JSHint | routes/recommend.js');
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
-    assert.ok(true, 'routes/recommend.js should pass jshint.');
+    assert.ok(false, 'routes/recommend.js should pass jshint.\nroutes/recommend.js: line 5, col 23, \'transition\' is defined but never used.\nroutes/recommend.js: line 5, col 16, \'model\' is defined but never used.\n\n2 errors');
+  });
+});
+define('r-s-ember/tests/serializers/application.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | serializers/application.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(false, 'serializers/application.js should pass jshint.\nserializers/application.js: line 4, col 25, \'options\' is defined but never used.\nserializers/application.js: line 4, col 15, \'snapshot\' is defined but never used.\n\n2 errors');
+  });
+});
+define('r-s-ember/tests/serializers/recommend.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | serializers/recommend.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(false, 'serializers/recommend.js should pass jshint.\nserializers/recommend.js: line 4, col 25, \'options\' is defined but never used.\nserializers/recommend.js: line 4, col 15, \'snapshot\' is defined but never used.\n\n2 errors');
   });
 });
 define('r-s-ember/tests/test-helper', ['exports', 'r-s-ember/tests/helpers/resolver', 'ember-qunit'], function (exports, _rSEmberTestsHelpersResolver, _emberQunit) {
@@ -149,6 +203,50 @@ define('r-s-ember/tests/test-helper.jshint', ['exports'], function (exports) {
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
     assert.ok(true, 'test-helper.js should pass jshint.');
+  });
+});
+define('r-s-ember/tests/unit/adapters/application-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
+
+  (0, _emberQunit.moduleFor)('adapter:application', 'Unit | Adapter | application', {
+    // Specify the other units that are required for this test.
+    // needs: ['serializer:foo']
+  });
+
+  // Replace this with your real tests.
+  (0, _emberQunit.test)('it exists', function (assert) {
+    var adapter = this.subject();
+    assert.ok(adapter);
+  });
+});
+define('r-s-ember/tests/unit/adapters/application-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | unit/adapters/application-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'unit/adapters/application-test.js should pass jshint.');
+  });
+});
+define('r-s-ember/tests/unit/controllers/recommend-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
+
+  (0, _emberQunit.moduleFor)('controller:recommend', 'Unit | Controller | recommend', {
+    // Specify the other units that are required for this test.
+    // needs: ['controller:foo']
+  });
+
+  // Replace this with your real tests.
+  (0, _emberQunit.test)('it exists', function (assert) {
+    var controller = this.subject();
+    assert.ok(controller);
+  });
+});
+define('r-s-ember/tests/unit/controllers/recommend-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | unit/controllers/recommend-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'unit/controllers/recommend-test.js should pass jshint.');
   });
 });
 define('r-s-ember/tests/unit/models/index-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
@@ -171,6 +269,49 @@ define('r-s-ember/tests/unit/models/index-test.jshint', ['exports'], function (e
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
     assert.ok(true, 'unit/models/index-test.js should pass jshint.');
+  });
+});
+define('r-s-ember/tests/unit/models/recommend-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
+
+  (0, _emberQunit.moduleForModel)('recommend', 'Unit | Model | recommend', {
+    // Specify the other units that are required for this test.
+    needs: []
+  });
+
+  (0, _emberQunit.test)('it exists', function (assert) {
+    var model = this.subject();
+    // let store = this.store();
+    assert.ok(!!model);
+  });
+});
+define('r-s-ember/tests/unit/models/recommend-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | unit/models/recommend-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'unit/models/recommend-test.js should pass jshint.');
+  });
+});
+define('r-s-ember/tests/unit/routes/error-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
+
+  (0, _emberQunit.moduleFor)('route:error', 'Unit | Route | error', {
+    // Specify the other units that are required for this test.
+    // needs: ['controller:foo']
+  });
+
+  (0, _emberQunit.test)('it exists', function (assert) {
+    var route = this.subject();
+    assert.ok(route);
+  });
+});
+define('r-s-ember/tests/unit/routes/error-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | unit/routes/error-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'unit/routes/error-test.js should pass jshint.');
   });
 });
 define('r-s-ember/tests/unit/routes/index-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
@@ -234,6 +375,56 @@ define('r-s-ember/tests/unit/routes/users-test.jshint', ['exports'], function (e
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
     assert.ok(true, 'unit/routes/users-test.js should pass jshint.');
+  });
+});
+define('r-s-ember/tests/unit/serializers/application-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
+
+  (0, _emberQunit.moduleForModel)('application', 'Unit | Serializer | application', {
+    // Specify the other units that are required for this test.
+    needs: ['serializer:application']
+  });
+
+  // Replace this with your real tests.
+  (0, _emberQunit.test)('it serializes records', function (assert) {
+    var record = this.subject();
+
+    var serializedRecord = record.serialize();
+
+    assert.ok(serializedRecord);
+  });
+});
+define('r-s-ember/tests/unit/serializers/application-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | unit/serializers/application-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'unit/serializers/application-test.js should pass jshint.');
+  });
+});
+define('r-s-ember/tests/unit/serializers/recommend-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
+
+  (0, _emberQunit.moduleForModel)('recommend', 'Unit | Serializer | recommend', {
+    // Specify the other units that are required for this test.
+    needs: ['serializer:recommend']
+  });
+
+  // Replace this with your real tests.
+  (0, _emberQunit.test)('it serializes records', function (assert) {
+    var record = this.subject();
+
+    var serializedRecord = record.serialize();
+
+    assert.ok(serializedRecord);
+  });
+});
+define('r-s-ember/tests/unit/serializers/recommend-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | unit/serializers/recommend-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'unit/serializers/recommend-test.js should pass jshint.');
   });
 });
 /* jshint ignore:start */

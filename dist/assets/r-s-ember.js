@@ -6,23 +6,25 @@
 
 /* jshint ignore:end */
 
+define('r-s-ember/adapters/application', ['exports', 'ember-data/adapters/json-api'], function (exports, _emberDataAdaptersJsonApi) {
+	exports['default'] = _emberDataAdaptersJsonApi['default'].extend({
+		namespace: 'psapi',
+		host: 'http://localhost:8082'
+	});
+});
 define('r-s-ember/app', ['exports', 'ember', 'r-s-ember/resolver', 'ember-load-initializers', 'r-s-ember/config/environment'], function (exports, _ember, _rSEmberResolver, _emberLoadInitializers, _rSEmberConfigEnvironment) {
 
   var App = undefined;
 
   _ember['default'].MODEL_FACTORY_INJECTIONS = true;
 
-  App = _ember['default'].Application.extend({
+  App = window.App = _ember['default'].Application.extend({
     modulePrefix: _rSEmberConfigEnvironment['default'].modulePrefix,
     podModulePrefix: _rSEmberConfigEnvironment['default'].podModulePrefix,
     Resolver: _rSEmberResolver['default']
   });
 
   (0, _emberLoadInitializers['default'])(App, _rSEmberConfigEnvironment['default'].modulePrefix);
-
-  DS.RESTAdapter.reopen({
-    url: '/rest/1'
-  });
 
   exports['default'] = App;
 });
@@ -35,6 +37,9 @@ define('r-s-ember/components/app-version', ['exports', 'ember-cli-app-version/co
     version: version,
     name: name
   });
+});
+define('r-s-ember/controllers/recommend', ['exports', 'ember'], function (exports, _ember) {
+	exports['default'] = _ember['default'].Controller.extend({});
 });
 define('r-s-ember/helpers/pluralize', ['exports', 'ember-inflector/lib/helpers/pluralize'], function (exports, _emberInflectorLibHelpersPluralize) {
   exports['default'] = _emberInflectorLibHelpersPluralize['default'];
@@ -199,6 +204,11 @@ define("r-s-ember/instance-initializers/ember-data", ["exports", "ember-data/-pr
     initialize: _emberDataPrivateInstanceInitializersInitializeStoreService["default"]
   };
 });
+define('r-s-ember/models/recommend', ['exports', 'ember-data/model', 'ember-data/attr'], function (exports, _emberDataModel, _emberDataAttr) {
+  exports['default'] = _emberDataModel['default'].extend({
+    firstName: (0, _emberDataAttr['default'])('string')
+  });
+});
 define('r-s-ember/resolver', ['exports', 'ember-resolver'], function (exports, _emberResolver) {
   exports['default'] = _emberResolver['default'];
 });
@@ -210,20 +220,53 @@ define('r-s-ember/router', ['exports', 'ember', 'r-s-ember/config/environment'],
 
   Router.map(function () {
     this.route('recommend');
+    this.route('error');
   });
 
   exports['default'] = Router;
 });
+define('r-s-ember/routes/error', ['exports', 'ember'], function (exports, _ember) {
+  exports['default'] = _ember['default'].Route.extend({});
+});
 define('r-s-ember/routes/index', ['exports', 'ember'], function (exports, _ember) {
+	exports['default'] = _ember['default'].Route.extend({});
+});
+define('r-s-ember/routes/recommend', ['exports', 'ember'], function (exports, _ember) {
+	var errorModel = false;
+
 	exports['default'] = _ember['default'].Route.extend({
+		afterModel: function afterModel(model, transition) {
+			if (errorModel) {
+				this.transitionTo('error');
+			}
+		},
 		model: function model() {
-			return ['red', 'green'];
+			errorModel = false;
+			return this.store.findAll('recommend')['catch'](function (reason) {
+				console.log(reason);
+				errorModel = true;
+			});
 		}
 
 	});
 });
-define('r-s-ember/routes/recommend', ['exports', 'ember'], function (exports, _ember) {
-	exports['default'] = _ember['default'].Route.extend({});
+define('r-s-ember/serializers/application', ['exports', 'ember-data/serializers/json-api'], function (exports, _emberDataSerializersJsonApi) {
+   exports['default'] = _emberDataSerializersJsonApi['default'].extend({
+      serialize: function serialize(snapshot, options) {
+         var json = this._super.apply(this, arguments);
+
+         return json;
+      }
+   });
+});
+define('r-s-ember/serializers/recommend', ['exports', 'ember-data/serializers/json-api'], function (exports, _emberDataSerializersJsonApi) {
+   exports['default'] = _emberDataSerializersJsonApi['default'].extend({
+      serialize: function serialize(snapshot, options) {
+         var json = this._super.apply(this, arguments);
+
+         return json;
+      }
+   });
 });
 define('r-s-ember/services/ajax', ['exports', 'ember-ajax/services/ajax'], function (exports, _emberAjaxServicesAjax) {
   Object.defineProperty(exports, 'default', {
@@ -276,6 +319,106 @@ define("r-s-ember/templates/application", ["exports"], function (exports) {
       statements: [["content", "outlet", ["loc", [null, [1, 0], [1, 10]]]]],
       locals: [],
       templates: []
+    };
+  })());
+});
+define("r-s-ember/templates/error", ["exports"], function (exports) {
+  exports["default"] = Ember.HTMLBars.template((function () {
+    var child0 = (function () {
+      return {
+        meta: {
+          "fragmentReason": false,
+          "revision": "Ember@2.5.1",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 6,
+              "column": 1
+            },
+            "end": {
+              "line": 6,
+              "column": 58
+            }
+          },
+          "moduleName": "r-s-ember/templates/error.hbs"
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("Recommend Programs/Courses For me");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes() {
+          return [];
+        },
+        statements: [],
+        locals: [],
+        templates: []
+      };
+    })();
+    return {
+      meta: {
+        "fragmentReason": {
+          "name": "missing-wrapper",
+          "problems": ["wrong-type", "multiple-nodes"]
+        },
+        "revision": "Ember@2.5.1",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 8,
+            "column": 0
+          }
+        },
+        "moduleName": "r-s-ember/templates/error.hbs"
+      },
+      isEmpty: false,
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("h3");
+        var el2 = dom.createTextNode("\nBackend error occured while processing. Please try after some time.\n");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("p");
+        dom.setAttribute(el1, "id", "takeToRecommend");
+        var el2 = dom.createTextNode("\n	");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var morphs = new Array(2);
+        morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+        morphs[1] = dom.createMorphAt(dom.childAt(fragment, [4]), 1, 1);
+        dom.insertBoundary(fragment, 0);
+        return morphs;
+      },
+      statements: [["content", "outlet", ["loc", [null, [1, 0], [1, 10]]]], ["block", "link-to", ["recommend"], [], 0, null, ["loc", [null, [6, 1], [6, 70]]]]],
+      locals: [],
+      templates: [child0]
     };
   })());
 });
@@ -435,7 +578,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("r-s-ember/app")["default"].create({"name":"r-s-ember","version":"0.0.0+0c5b11e8"});
+  require("r-s-ember/app")["default"].create({"name":"r-s-ember","version":"0.0.0+1302cb09"});
 }
 
 /* jshint ignore:end */
