@@ -83982,6 +83982,479 @@ define('ember-resolver/utils/module-registry', ['exports', 'ember'], function (e
 
   exports['default'] = ModuleRegistry;
 });
+define('ember-uploader/components/file-field', ['exports', 'ember'], function (exports, _ember) {
+  'use strict';
+
+  exports['default'] = _ember['default'].Component.extend(_ember['default'].Evented, {
+    tagName: 'input',
+    type: 'file',
+    attributeBindings: ['type', 'multiple'],
+    multiple: false,
+    change: function change(event) {
+      var input = event.target;
+      if (!_ember['default'].isEmpty(input.files)) {
+        this.trigger('filesDidChange', input.files);
+      }
+    }
+  });
+});
+define('ember-uploader/components', ['exports', 'ember-uploader/components/file-field'], function (exports, _emberUploaderComponentsFileField) {
+  'use strict';
+
+  exports.FileField = _emberUploaderComponentsFileField['default'];
+});
+define('ember-uploader/core', ['exports', 'ember', 'ember-uploader/version'], function (exports, _ember, _emberUploaderVersion) {
+  'use strict';
+
+  /**
+   * @module ember-uploader
+   */
+
+  /**
+   * All Ember Uploader methods and functions are defined inside of this namespace.
+   *
+   * @class EmberUploader
+   * @static
+   */
+
+  /**
+   * @property VERSION
+   * @type string
+   * @static
+   */
+
+  var EmberUploader = _ember['default'].Namespace.create({
+    VERSION: _emberUploaderVersion['default']
+  });
+
+  if (_ember['default'].libraries) {
+    _ember['default'].libraries.registerCoreLibrary('Ember Uploader', EmberUploader.VERSION);
+  }
+
+  exports['default'] = EmberUploader;
+});
+define('ember-uploader/index', ['exports', 'ember', 'ember-uploader/core', 'ember-uploader/uploaders', 'ember-uploader/components'], function (exports, _ember, _emberUploaderCore, _emberUploaderUploaders, _emberUploaderComponents) {
+  'use strict';
+
+  if (_ember['default'].VERSION.match(/^1/)) {
+    _ember['default'].Logger.warn('This version of Ember Uploader has not been tested on Ember 1.x. Use at your own risk.');
+  }_emberUploaderCore['default'].Uploader = _emberUploaderUploaders.Uploader;
+  _emberUploaderCore['default'].S3Uploader = _emberUploaderUploaders.S3Uploader;_emberUploaderCore['default'].FileField = _emberUploaderComponents.FileField;
+
+  _ember['default'].lookup.EmberUploader = _emberUploaderCore['default'];
+
+  exports['default'] = _emberUploaderCore['default'];
+});
+
+/**
+  Ember Uploader
+  @module ember-uploader
+  @main ember-uploader
+*/
+define('ember-uploader/uploaders/base', ['exports', 'ember'], function (exports, _ember) {
+  'use strict';
+
+  var _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }return target;
+  };
+
+  var get = _ember['default'].get;
+  var set = _ember['default'].set;
+  var isArray = _ember['default'].isArray;
+  var run = _ember['default'].run;
+
+  exports['default'] = _ember['default'].Object.extend(_ember['default'].Evented, {
+    /**
+     * Target url to upload to
+     *
+     * @property url
+     */
+    url: null,
+
+    /**
+     * ajax request method, by default it will be POST
+     *
+     * @property method
+     */
+    method: 'POST',
+
+    /**
+     * Used to define a namespace for the file param and any extra data params
+     * that may be sent
+     *
+     * @property paramNamespace
+     */
+    paramNamespace: null,
+
+    /**
+     * The parameter name for the file(s) to be uploaded
+     *
+     * @property paramName
+     */
+    paramName: 'file',
+
+    /**
+     * Boolean property changed to true upon upload start and false upon upload
+     * end
+     *
+     * @property isUploading
+     */
+    isUploading: false,
+
+    /**
+     * The ajax settings used in all requests made from the uploader
+     *
+     * @property ajaxSettings
+     */
+    ajaxSettings: {},
+
+    /**
+     * Start upload of file(s) and any extra data
+     *
+     * @param  {object|array} files  One file object or one array of files object
+     * @param  {object} extra Extra data to be sent with the upload
+     * @return {object} Returns a Ember.RSVP.Promise wrapping the ajax request
+     * object
+     */
+    upload: function upload(files) {
+      var extra = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
+      var data = this.createFormData(files, extra);
+      var url = get(this, 'url');
+      var method = get(this, 'method');
+
+      set(this, 'isUploading', true);
+
+      return this.ajax(url, data, method);
+    },
+
+    /**
+     * Creates the FormData object with the file(s) and any extra data
+     *
+     * @param {object|array} files One file object or an array of file objects
+     * @param {object} extra Extra data to be sent with the upload
+     * @return {object} Returns a FormData object with the supplied file(s) and
+     * extra data
+     */
+    createFormData: function createFormData(files) {
+      var extra = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
+      var formData = new FormData();
+
+      for (var prop in extra) {
+        if (extra.hasOwnProperty(prop)) {
+          formData.append(this.toNamespacedParam(prop), extra[prop]);
+        }
+      }
+
+      // if is a array of files ...
+      if (isArray(files)) {
+        var paramKey = this.toNamespacedParam(this.paramName) + '[]';
+
+        for (var i = 0; i < files.length; i++) {
+          // FormData expects the key for arrays to be postfixed with empty
+          // brackets This same key is used each time a new item is added.
+          formData.append(paramKey, files[i]);
+        }
+      } else {
+        // if has only one file object ...
+        formData.append(this.toNamespacedParam(this.paramName), files);
+      }
+
+      return formData;
+    },
+
+    /**
+     * Returns the param name namespaced if a namespace exists
+     *
+     * @param {string} name The param name to namespace
+     * @return {string} Returns the namespaced param
+     */
+    toNamespacedParam: function toNamespacedParam(name) {
+      return this.paramNamespace ? this.paramNamespace + '[' + name + ']' : name;
+    },
+
+    /**
+     * Triggers didUpload event with given params and sets isUploading to false
+     *
+     * @param {object} data Object of data supplied to the didUpload event
+     * @return {object} Returns the given data
+     */
+    didUpload: function didUpload(data) {
+      set(this, 'isUploading', false);
+      this.trigger('didUpload', data);
+      return data;
+    },
+
+    /**
+     * Triggers didError event with given params and sets isUploading to false
+     *
+     * @param {object} jqXHR jQuery XMLHttpRequest object
+     * @param {string} textStatus The status code of the error
+     * @param {object} errorThrown The error caused
+     * @return {object} Returns the jQuery XMLHttpRequest
+     */
+    didError: function didError(jqXHR, textStatus, errorThrown) {
+      set(this, 'isUploading', false);
+
+      // Borrowed from Ember Data
+      var isObject = jqXHR !== null && typeof jqXHR === 'object';
+
+      if (isObject) {
+        jqXHR.then = null;
+        if (!jqXHR.errorThrown) {
+          if (typeof errorThrown === 'string') {
+            jqXHR.errorThrown = new Error(errorThrown);
+          } else {
+            jqXHR.errorThrown = errorThrown;
+          }
+        }
+      }
+
+      this.trigger('didError', jqXHR, textStatus, errorThrown);
+
+      return jqXHR;
+    },
+
+    /**
+     * Triggers progress event supplying event with current percent
+     *
+     * @param {object} event Event from xhr onprogress
+     */
+    didProgress: function didProgress(event) {
+      event.percent = event.loaded / event.total * 100;
+      this.trigger('progress', event);
+    },
+
+    /**
+     * Triggers isAborting event and sets isUploading to false
+     */
+    abort: function abort() {
+      set(this, 'isUploading', false);
+      this.trigger('isAborting');
+    },
+
+    /**
+     * Starts a request to the given url sending the supplied data using the
+     * supplied request method
+     *
+     * @param {string} url The target url for the request
+     * @param {object} data The data to send with the request
+     * @param {string} method The request method
+     * @return {object} Returns a Ember.RSVP.Promise wrapping the ajax request
+     * object
+     */
+    ajax: function ajax(url) {
+      var _this = this;
+
+      var data = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+      var method = arguments.length <= 2 || arguments[2] === undefined ? this.method : arguments[2];
+
+      var ajaxSettings = get(this, 'ajaxSettings');
+
+      return this.ajaxPromise(_extends({}, ajaxSettings, {
+        contentType: false,
+        processData: false,
+        xhr: function xhr() {
+          var xhr = _ember['default'].$.ajaxSettings.xhr();
+          xhr.upload.onprogress = function (event) {
+            _this.didProgress(event);
+          };
+          _this.one('isAborting', function () {
+            return xhr.abort();
+          });
+          return xhr;
+        },
+        url: url,
+        data: data,
+        method: method
+      }));
+    },
+
+    /**
+     * Starts a request using the supplied settings returning a
+     * Ember.RSVP.Promise wrapping the ajax request
+     *
+     * @param {object} settings The jQuery.ajax compatible settings object
+     * @return {object} Returns a Ember.RSVP.Promise wrapping the ajax request
+     */
+    ajaxPromise: function ajaxPromise(settings) {
+      var _this2 = this;
+
+      return new _ember['default'].RSVP.Promise(function (resolve, reject) {
+        settings.success = function (data) {
+          run(null, resolve, _this2.didUpload(data));
+        };
+
+        settings.error = function (jqXHR, responseText, errorThrown) {
+          run(null, reject, _this2.didError(jqXHR, responseText, errorThrown));
+        };
+
+        _ember['default'].$.ajax(settings);
+      });
+    }
+  });
+});
+define('ember-uploader/uploaders/s3', ['exports', 'ember', 'ember-uploader/uploaders/base'], function (exports, _ember, _emberUploaderUploadersBase) {
+  'use strict';
+
+  var _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }return target;
+  };
+
+  var get = _ember['default'].get;
+  var set = _ember['default'].set;
+  var run = _ember['default'].run;
+
+  exports['default'] = _emberUploaderUploadersBase['default'].extend({
+    /**
+     * Target url used to request a signed upload policy
+     *
+     * @property url
+     */
+    signingUrl: '/sign',
+
+    /**
+     * request method for signing
+     *
+     * @property method
+     */
+    signingMethod: 'GET',
+
+    /**
+     * Boolean property changed to true upon signing start and false upon
+     * signing end
+     *
+     * @property isSigning
+     */
+    isSigning: false,
+
+    /**
+     * Request signed upload policy and upload file(s) and any extra data
+     *
+     * @param  {object|array} files  One file object or one array of files object
+     * @param  {object} extra Extra data to be sent with the upload
+     * @return {object} Returns a Ember.RSVP.Promise wrapping the signing
+     * request object
+     */
+    upload: function upload(file) {
+      var _this = this;
+
+      var extra = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
+      return this.sign(file, extra).then(function (json) {
+        var url = undefined;
+
+        set(_this, 'isUploading', true);
+
+        if (json.endpoint) {
+          url = json.endpoint;
+          delete json.endpoint;
+        } else if (json.region) {
+          url = '//s3-' + json.region + '.amazonaws.com/' + json.bucket;
+          delete json.region;
+        } else {
+          url = '//' + json.bucket + '.s3.amazonaws.com';
+        }
+
+        return _this.ajax(url, _this.createFormData(file, json));
+      });
+    },
+
+    /**
+     * Request signed upload policy
+     *
+     * @param  {object|array} files  One file object or one array of files object
+     * @param  {object} extra Extra data to be sent with the upload
+     * @return {object} Returns a Ember.RSVP.Promise wrapping the signing
+     * request object
+     */
+    sign: function sign(file) {
+      var _this2 = this;
+
+      var extra = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
+      var url = get(this, 'signingUrl');
+      var method = get(this, 'signingMethod');
+      var signingAjaxSettings = get(this, 'signingAjaxSettings');
+
+      extra.name = file.name;
+      extra.type = file.type;
+      extra.size = file.size;
+
+      var settings = _extends({}, signingAjaxSettings, {
+        contentType: 'application/json',
+        dataType: 'json',
+        data: method.match(/get/i) ? extra : JSON.stringify(extra),
+        method: method,
+        url: url
+      });
+
+      set(this, 'isSigning', true);
+
+      return new _ember['default'].RSVP.Promise(function (resolve, reject) {
+        settings.success = function (json) {
+          run(null, resolve, _this2.didSign(json));
+        };
+
+        settings.error = function (jqXHR, responseText, errorThrown) {
+          run(null, reject, _this2.didErrorOnSign(jqXHR, responseText, errorThrown));
+        };
+
+        _ember['default'].$.ajax(settings);
+      });
+    },
+
+    /**
+     * Triggers didErrorOnSign event and sets isSigning to false
+     *
+     * @param {object} jqXHR jQuery XMLHttpRequest object
+     * @param {string} textStatus The status code of the error
+     * @param {object} errorThrown The error caused
+     * @return {object} Returns the jQuery XMLHttpRequest
+     */
+    didErrorOnSign: function didErrorOnSign(jqXHR, textStatus, errorThrown) {
+      set(this, 'isSigning', false);
+      this.trigger('didErrorOnSign');
+      this.didError(jqXHR, textStatus, errorThrown);
+      return jqXHR;
+    },
+
+    /**
+     * Triggers didSign event and returns the signing response
+     *
+     * @param {object} response The signing response
+     * @return {object} The signing response
+     */
+    didSign: function didSign(response) {
+      this.trigger('didSign', response);
+      return response;
+    }
+  });
+});
+define('ember-uploader/uploaders', ['exports', 'ember-uploader/uploaders/base', 'ember-uploader/uploaders/s3'], function (exports, _emberUploaderUploadersBase, _emberUploaderUploadersS3) {
+  'use strict';
+
+  exports.Uploader = _emberUploaderUploadersBase['default'];
+  exports.S3Uploader = _emberUploaderUploadersS3['default'];
+});
+define("ember-uploader/version", ["exports"], function (exports) {
+  "use strict";
+
+  exports["default"] = "1.1.0";
+});
 ;/* jshint ignore:start */
 
 

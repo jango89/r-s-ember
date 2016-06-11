@@ -38,6 +38,26 @@ define('r-s-ember/components/app-version', ['exports', 'ember-cli-app-version/co
     name: name
   });
 });
+define('r-s-ember/components/file-field', ['exports', 'ember-uploader/components/file-field'], function (exports, _emberUploaderComponentsFileField) {
+  exports['default'] = _emberUploaderComponentsFileField['default'];
+});
+define('r-s-ember/components/pdf-upload', ['exports', 'ember', 'ember-uploader'], function (exports, _ember, _emberUploader) {
+	exports['default'] = _emberUploader['default'].FileField.extend({
+		url: "http://localhost:8082/psapi/upload",
+
+		filesDidChange: function filesDidChange(files) {
+			var uploader = _emberUploader['default'].Uploader.create({
+				url: this.get('url'),
+				method: 'post',
+				paramNamespace: 'post'
+			});
+
+			if (!_ember['default'].isEmpty(files)) {
+				uploader.upload(files[0]);
+			}
+		}
+	});
+});
 define('r-s-ember/controllers/recommend', ['exports', 'ember'], function (exports, _ember) {
 	exports['default'] = _ember['default'].Controller.extend({});
 });
@@ -322,6 +342,51 @@ define("r-s-ember/templates/application", ["exports"], function (exports) {
     };
   })());
 });
+define("r-s-ember/templates/components/pdf-upload", ["exports"], function (exports) {
+  exports["default"] = Ember.HTMLBars.template((function () {
+    return {
+      meta: {
+        "fragmentReason": {
+          "name": "missing-wrapper",
+          "problems": ["wrong-type"]
+        },
+        "revision": "Ember@2.5.1",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 1,
+            "column": 9
+          }
+        },
+        "moduleName": "r-s-ember/templates/components/pdf-upload.hbs"
+      },
+      isEmpty: false,
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var morphs = new Array(1);
+        morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+        dom.insertBoundary(fragment, 0);
+        dom.insertBoundary(fragment, null);
+        return morphs;
+      },
+      statements: [["content", "yield", ["loc", [null, [1, 0], [1, 9]]]]],
+      locals: [],
+      templates: []
+    };
+  })());
+});
 define("r-s-ember/templates/error", ["exports"], function (exports) {
   exports["default"] = Ember.HTMLBars.template((function () {
     var child0 = (function () {
@@ -513,7 +578,7 @@ define("r-s-ember/templates/recommend", ["exports"], function (exports) {
       meta: {
         "fragmentReason": {
           "name": "missing-wrapper",
-          "problems": ["empty-body"]
+          "problems": ["multiple-nodes", "wrong-type"]
         },
         "revision": "Ember@2.5.1",
         "loc": {
@@ -523,24 +588,35 @@ define("r-s-ember/templates/recommend", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 1,
-            "column": 0
+            "line": 3,
+            "column": 14
           }
         },
         "moduleName": "r-s-ember/templates/recommend.hbs"
       },
-      isEmpty: true,
+      isEmpty: false,
       arity: 0,
       cachedFragment: null,
       hasRendered: false,
       buildFragment: function buildFragment(dom) {
         var el0 = dom.createDocumentFragment();
+        var el1 = dom.createElement("h3");
+        var el2 = dom.createTextNode("Upload Pdf");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
         return el0;
       },
-      buildRenderNodes: function buildRenderNodes() {
-        return [];
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var morphs = new Array(1);
+        morphs[0] = dom.createMorphAt(fragment, 2, 2, contextualElement);
+        dom.insertBoundary(fragment, null);
+        return morphs;
       },
-      statements: [],
+      statements: [["content", "pdf-upload", ["loc", [null, [3, 0], [3, 14]]]]],
       locals: [],
       templates: []
     };
@@ -578,7 +654,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("r-s-ember/app")["default"].create({"name":"r-s-ember","version":"0.0.0+1302cb09"});
+  require("r-s-ember/app")["default"].create({"name":"r-s-ember","version":"0.0.0+733e190a"});
 }
 
 /* jshint ignore:end */
