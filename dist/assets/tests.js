@@ -22,7 +22,7 @@ define('r-s-ember/tests/components/pdf-upload.jshint', ['exports'], function (ex
   QUnit.module('JSHint | components/pdf-upload.js');
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
-    assert.ok(true, 'components/pdf-upload.js should pass jshint.');
+    assert.ok(false, 'components/pdf-upload.js should pass jshint.\ncomponents/pdf-upload.js: line 22, col 57, Missing semicolon.\ncomponents/pdf-upload.js: line 25, col 21, \'myChart\' is defined but never used.\ncomponents/pdf-upload.js: line 61, col 16, \'error\' is defined but never used.\ncomponents/pdf-upload.js: line 25, col 35, \'Chart\' is not defined.\n\n4 errors');
   });
 });
 define('r-s-ember/tests/controllers/recommend.jshint', ['exports'], function (exports) {

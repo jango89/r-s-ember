@@ -43,6 +43,7 @@ define('r-s-ember/components/file-field', ['exports', 'ember-uploader/components
 });
 define('r-s-ember/components/pdf-upload', ['exports', 'ember', 'ember-uploader'], function (exports, _ember, _emberUploader) {
 	exports['default'] = _emberUploader['default'].FileField.extend({
+
 		url: "http://localhost:8082/psapi/upload",
 
 		filesDidChange: function filesDidChange(files) {
@@ -53,9 +54,43 @@ define('r-s-ember/components/pdf-upload', ['exports', 'ember', 'ember-uploader']
 			});
 
 			if (!_ember['default'].isEmpty(files)) {
-				uploader.upload(files[0]);
+				uploader.upload(files[0]).then(function (data) {
+					console.log(data);
+					var labels = [];
+					var dataSets = [];
+					for (var i = 0; i < data.length; i++) {
+						labels.push(data[i]["label"]);
+						dataSets.push(data[i]["score"] * 1000);
+					}
+					var ctx = document.getElementById("myChart");
+					var myChart = new Chart(ctx, {
+						type: 'bar',
+						data: {
+							labels: labels,
+							datasets: [{
+								label: 'Score matching your profile',
+								data: dataSets,
+								backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(255, 206, 86, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(153, 102, 255, 0.2)', 'rgba(255, 159, 64, 0.2)'],
+								borderColor: ['rgba(255,99,132,1)', 'rgba(54, 162, 235, 1)', 'rgba(255, 206, 86, 1)', 'rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)', 'rgba(255, 159, 64, 1)'],
+								borderWidth: 1
+							}]
+						},
+						options: {
+							scales: {
+								yAxes: [{
+									ticks: {
+										beginAtZero: true
+									}
+								}]
+							}
+						}
+					});
+				}, function (error) {
+					// Handle failure
+				});
 			}
 		}
+
 	});
 });
 define('r-s-ember/controllers/recommend', ['exports', 'ember'], function (exports, _ember) {
@@ -588,8 +623,8 @@ define("r-s-ember/templates/recommend", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 3,
-            "column": 14
+            "line": 10,
+            "column": 0
           }
         },
         "moduleName": "r-s-ember/templates/recommend.hbs"
@@ -600,6 +635,8 @@ define("r-s-ember/templates/recommend", ["exports"], function (exports) {
       hasRendered: false,
       buildFragment: function buildFragment(dom) {
         var el0 = dom.createDocumentFragment();
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
         var el1 = dom.createElement("h3");
         var el2 = dom.createTextNode("Upload Pdf");
         dom.appendChild(el1, el2);
@@ -608,15 +645,29 @@ define("r-s-ember/templates/recommend", ["exports"], function (exports) {
         dom.appendChild(el0, el1);
         var el1 = dom.createComment("");
         dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("div");
+        var el2 = dom.createTextNode("\n	");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("canvas");
+        dom.setAttribute(el2, "id", "myChart");
+        dom.setAttribute(el2, "width", "400");
+        dom.setAttribute(el2, "height", "400");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n\n");
+        dom.appendChild(el0, el1);
         return el0;
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
         var morphs = new Array(1);
-        morphs[0] = dom.createMorphAt(fragment, 2, 2, contextualElement);
-        dom.insertBoundary(fragment, null);
+        morphs[0] = dom.createMorphAt(fragment, 3, 3, contextualElement);
         return morphs;
       },
-      statements: [["content", "pdf-upload", ["loc", [null, [3, 0], [3, 14]]]]],
+      statements: [["content", "pdf-upload", ["loc", [null, [4, 0], [4, 14]]]]],
       locals: [],
       templates: []
     };
@@ -654,7 +705,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("r-s-ember/app")["default"].create({"name":"r-s-ember","version":"0.0.0+733e190a"});
+  require("r-s-ember/app")["default"].create({"name":"r-s-ember","version":"0.0.0+e9995cc5"});
 }
 
 /* jshint ignore:end */
