@@ -15,8 +15,24 @@
     {{content-for "head-footer"}}
   </head>
   <body>
-    {{content-for "body"}}
-
+  <section id="container" >
+         {{content-for "body"}}
+      <!--header start-->
+      <header class="header black-bg">
+              <div class="sidebar-toggle-box">
+                  <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
+              </div>
+            <!--logo start-->
+            <a href="/" class="logo"><b>Heriot Watt Recommender System</b></a>
+            
+            </div>
+            <div class="top-menu">
+              <ul class="nav pull-right top-menu">
+                    <li><a class="logout" href="/">Hey Guest</a></li>
+              </ul>
+            </div>
+        </header>
+        </section>
     <script src="assets/vendor.js"></script>
     <script src="assets/r-s-ember.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.min.js"></script>

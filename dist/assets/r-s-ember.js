@@ -283,8 +283,37 @@ define('r-s-ember/router', ['exports', 'ember', 'r-s-ember/config/environment'],
 define('r-s-ember/routes/error', ['exports', 'ember'], function (exports, _ember) {
   exports['default'] = _ember['default'].Route.extend({});
 });
-define('r-s-ember/routes/index', ['exports', 'ember'], function (exports, _ember) {
-	exports['default'] = _ember['default'].Route.extend({});
+define("r-s-ember/routes/index", ["exports", "ember"], function (exports, _ember) {
+	exports["default"] = _ember["default"].Route.extend({
+		model: function model() {
+			$(document).ready(function () {
+				$.ajax({
+					url: "http://localhost:8082/psapi/dashboards",
+
+					// The name of the callback parameter, as specified by the YQL service
+					jsonp: "callback",
+
+					// Tell jQuery we're expecting JSONP
+					dataType: "jsonp",
+					success: function success(data) {
+						console(data);
+					},
+					error: function error(xhr, status, _error) {
+						if (xhr.status == 200) {
+							$('#server_status_h3').text("OK");
+							$('#server_status_p').text("Your server is working perfectly. Relax & enjoy.");
+							$('#course_status_h3').text(window.jsonPResponse.courseStatus);
+							$('#course_status_p').text("There are " + window.jsonPResponse.courseStatus + " courses available in total");
+							$('#rec_status_h3').text(window.jsonPResponse.recommendations);
+							$('#rec_status_p').text(window.jsonPResponse.recommendations + " recommendations done till now");
+							$('#maxIp').text(window.jsonPResponse.maxHitIp);
+							$('#maxIpDate').text(new Date(window.jsonPResponse.maxHitValue));
+						}
+					}
+				});
+			});
+		}
+	});
 });
 define('r-s-ember/routes/recommend', ['exports', 'ember'], function (exports, _ember) {
 	var errorModel = false;
@@ -432,12 +461,12 @@ define("r-s-ember/templates/error", ["exports"], function (exports) {
           "loc": {
             "source": null,
             "start": {
-              "line": 6,
-              "column": 1
+              "line": 8,
+              "column": 3
             },
             "end": {
-              "line": 6,
-              "column": 58
+              "line": 8,
+              "column": 60
             }
           },
           "moduleName": "r-s-ember/templates/error.hbs"
@@ -474,8 +503,8 @@ define("r-s-ember/templates/error", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 8,
-            "column": 0
+            "line": 11,
+            "column": 10
           }
         },
         "moduleName": "r-s-ember/templates/error.hbs"
@@ -490,33 +519,45 @@ define("r-s-ember/templates/error", ["exports"], function (exports) {
         dom.appendChild(el0, el1);
         var el1 = dom.createTextNode("\n");
         dom.appendChild(el0, el1);
-        var el1 = dom.createElement("h3");
-        var el2 = dom.createTextNode("\nBackend error occured while processing. Please try after some time.\n");
+        var el1 = dom.createElement("section");
+        dom.setAttribute(el1, "id", "main-content");
+        var el2 = dom.createTextNode("\n    ");
         dom.appendChild(el1, el2);
-        dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n");
-        dom.appendChild(el0, el1);
-        var el1 = dom.createElement("p");
-        dom.setAttribute(el1, "id", "takeToRecommend");
-        var el2 = dom.createTextNode("\n	");
-        dom.appendChild(el1, el2);
-        var el2 = dom.createComment("");
+        var el2 = dom.createElement("section");
+        dom.setAttribute(el2, "class", "wrapper");
+        var el3 = dom.createTextNode("\n		");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("h3");
+        var el4 = dom.createTextNode("\n		Backend error occured while processing. Please try after some time.\n		");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n		");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("p");
+        dom.setAttribute(el3, "id", "takeToRecommend");
+        var el4 = dom.createTextNode("\n			");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n		");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n	");
+        dom.appendChild(el2, el3);
         dom.appendChild(el1, el2);
         var el2 = dom.createTextNode("\n");
         dom.appendChild(el1, el2);
-        dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n");
         dom.appendChild(el0, el1);
         return el0;
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
         var morphs = new Array(2);
         morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
-        morphs[1] = dom.createMorphAt(dom.childAt(fragment, [4]), 1, 1);
+        morphs[1] = dom.createMorphAt(dom.childAt(fragment, [2, 1, 3]), 1, 1);
         dom.insertBoundary(fragment, 0);
         return morphs;
       },
-      statements: [["content", "outlet", ["loc", [null, [1, 0], [1, 10]]]], ["block", "link-to", ["recommend"], [], 0, null, ["loc", [null, [6, 1], [6, 70]]]]],
+      statements: [["content", "outlet", ["loc", [null, [1, 0], [1, 10]]]], ["block", "link-to", ["recommend"], [], 0, null, ["loc", [null, [8, 3], [8, 72]]]]],
       locals: [],
       templates: [child0]
     };
@@ -532,12 +573,12 @@ define("r-s-ember/templates/index", ["exports"], function (exports) {
           "loc": {
             "source": null,
             "start": {
-              "line": 2,
-              "column": 1
+              "line": 10,
+              "column": 15
             },
             "end": {
-              "line": 2,
-              "column": 58
+              "line": 10,
+              "column": 113
             }
           },
           "moduleName": "r-s-ember/templates/index.hbs"
@@ -563,7 +604,8 @@ define("r-s-ember/templates/index", ["exports"], function (exports) {
     return {
       meta: {
         "fragmentReason": {
-          "name": "triple-curlies"
+          "name": "missing-wrapper",
+          "problems": ["wrong-type", "multiple-nodes"]
         },
         "revision": "Ember@2.5.1",
         "loc": {
@@ -573,8 +615,8 @@ define("r-s-ember/templates/index", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 3,
-            "column": 4
+            "line": 159,
+            "column": 0
           }
         },
         "moduleName": "r-s-ember/templates/index.hbs"
@@ -585,23 +627,629 @@ define("r-s-ember/templates/index", ["exports"], function (exports) {
       hasRendered: false,
       buildFragment: function buildFragment(dom) {
         var el0 = dom.createDocumentFragment();
-        var el1 = dom.createElement("p");
-        dom.setAttribute(el1, "id", "takeToRecommend");
-        var el2 = dom.createTextNode("\n	");
+        var el1 = dom.createTextNode("\n\n        ");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createComment("main content start");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n      ");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("section");
+        dom.setAttribute(el1, "id", "main-content");
+        var el2 = dom.createTextNode("\n          ");
         dom.appendChild(el1, el2);
-        var el2 = dom.createComment("");
+        var el2 = dom.createElement("section");
+        dom.setAttribute(el2, "class", "wrapper");
+        var el3 = dom.createTextNode("\n\n              ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("div");
+        dom.setAttribute(el3, "class", "row");
+        var el4 = dom.createTextNode("\n\n                  ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("div");
+        dom.setAttribute(el4, "class", "col-lg-9 main-chart");
+        var el5 = dom.createTextNode("\n              	");
+        dom.appendChild(el4, el5);
+        var el5 = dom.createComment("");
+        dom.appendChild(el4, el5);
+        var el5 = dom.createTextNode("    \n                    ");
+        dom.appendChild(el4, el5);
+        var el5 = dom.createElement("div");
+        dom.setAttribute(el5, "class", "row mtbox");
+        var el6 = dom.createTextNode("\n              \n                      ");
+        dom.appendChild(el5, el6);
+        var el6 = dom.createElement("div");
+        dom.setAttribute(el6, "class", "col-md-2 col-md-offset-1 box0");
+        var el7 = dom.createTextNode("\n                        ");
+        dom.appendChild(el6, el7);
+        var el7 = dom.createElement("div");
+        dom.setAttribute(el7, "class", "box1");
+        var el8 = dom.createTextNode("\n                  ");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createElement("span");
+        dom.setAttribute(el8, "class", "li_cloud");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createTextNode("\n                  ");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createElement("h3");
+        dom.setAttribute(el8, "id", "rec_status_h3");
+        var el9 = dom.createTextNode("NA");
+        dom.appendChild(el8, el9);
+        dom.appendChild(el7, el8);
+        var el8 = dom.createTextNode("\n                        ");
+        dom.appendChild(el7, el8);
+        dom.appendChild(el6, el7);
+        var el7 = dom.createTextNode("\n                  ");
+        dom.appendChild(el6, el7);
+        var el7 = dom.createElement("p");
+        dom.setAttribute(el7, "id", "rec_status_p");
+        var el8 = dom.createTextNode("Not able to gather information about number of recommendations");
+        dom.appendChild(el7, el8);
+        dom.appendChild(el6, el7);
+        var el7 = dom.createTextNode("\n                      ");
+        dom.appendChild(el6, el7);
+        dom.appendChild(el5, el6);
+        var el6 = dom.createTextNode("\n                      ");
+        dom.appendChild(el5, el6);
+        var el6 = dom.createElement("div");
+        dom.setAttribute(el6, "class", "col-md-2 col-sm-2 box0");
+        var el7 = dom.createTextNode("\n                        ");
+        dom.appendChild(el6, el7);
+        var el7 = dom.createElement("div");
+        dom.setAttribute(el7, "class", "box1");
+        var el8 = dom.createTextNode("\n                  ");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createElement("span");
+        dom.setAttribute(el8, "class", "li_stack");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createTextNode("\n                  ");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createElement("h3");
+        dom.setAttribute(el8, "id", "course_status_h3");
+        var el9 = dom.createTextNode("NA");
+        dom.appendChild(el8, el9);
+        dom.appendChild(el7, el8);
+        var el8 = dom.createTextNode("\n                        ");
+        dom.appendChild(el7, el8);
+        dom.appendChild(el6, el7);
+        var el7 = dom.createTextNode("\n                  ");
+        dom.appendChild(el6, el7);
+        var el7 = dom.createElement("p");
+        dom.setAttribute(el7, "id", "course_status_p");
+        var el8 = dom.createTextNode("Course details are not available");
+        dom.appendChild(el7, el8);
+        dom.appendChild(el6, el7);
+        var el7 = dom.createTextNode("\n                      ");
+        dom.appendChild(el6, el7);
+        dom.appendChild(el5, el6);
+        var el6 = dom.createTextNode("\n                      ");
+        dom.appendChild(el5, el6);
+        var el6 = dom.createElement("div");
+        dom.setAttribute(el6, "class", "col-md-2 col-sm-2 box0");
+        var el7 = dom.createTextNode("\n                        ");
+        dom.appendChild(el6, el7);
+        var el7 = dom.createElement("div");
+        dom.setAttribute(el7, "class", "box1");
+        var el8 = dom.createTextNode("\n                  ");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createElement("span");
+        dom.setAttribute(el8, "class", "li_news");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createTextNode("\n                  ");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createElement("h3");
+        var el9 = dom.createTextNode("4");
+        dom.appendChild(el8, el9);
+        dom.appendChild(el7, el8);
+        var el8 = dom.createTextNode("\n                        ");
+        dom.appendChild(el7, el8);
+        dom.appendChild(el6, el7);
+        var el7 = dom.createTextNode("\n                  ");
+        dom.appendChild(el6, el7);
+        var el7 = dom.createElement("p");
+        var el8 = dom.createTextNode("Heriot Watt Universities are present in 4 countries");
+        dom.appendChild(el7, el8);
+        dom.appendChild(el6, el7);
+        var el7 = dom.createTextNode("\n                      ");
+        dom.appendChild(el6, el7);
+        dom.appendChild(el5, el6);
+        var el6 = dom.createTextNode("\n                      \n                      ");
+        dom.appendChild(el5, el6);
+        var el6 = dom.createElement("div");
+        dom.setAttribute(el6, "class", "col-md-2 col-sm-2 box0");
+        var el7 = dom.createTextNode("\n                        ");
+        dom.appendChild(el6, el7);
+        var el7 = dom.createElement("div");
+        dom.setAttribute(el7, "class", "box1");
+        var el8 = dom.createTextNode("\n                  ");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createElement("span");
+        dom.setAttribute(el8, "class", "li_data");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createTextNode("\n                  ");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createElement("h3");
+        dom.setAttribute(el8, "id", "server_status_h3");
+        var el9 = dom.createTextNode("NA!");
+        dom.appendChild(el8, el9);
+        dom.appendChild(el7, el8);
+        var el8 = dom.createTextNode("\n                        ");
+        dom.appendChild(el7, el8);
+        dom.appendChild(el6, el7);
+        var el7 = dom.createTextNode("\n                  ");
+        dom.appendChild(el6, el7);
+        var el7 = dom.createElement("p");
+        dom.setAttribute(el7, "id", "server_status_p");
+        var el8 = dom.createTextNode("Your server is not working perfectly. :( ");
+        dom.appendChild(el7, el8);
+        dom.appendChild(el6, el7);
+        var el7 = dom.createTextNode("\n                      ");
+        dom.appendChild(el6, el7);
+        dom.appendChild(el5, el6);
+        var el6 = dom.createTextNode("\n                    \n                    ");
+        dom.appendChild(el5, el6);
+        dom.appendChild(el4, el5);
+        var el5 = dom.createComment(" /row mt ");
+        dom.appendChild(el4, el5);
+        var el5 = dom.createTextNode("  \n                  \n                      \n                      ");
+        dom.appendChild(el4, el5);
+        var el5 = dom.createElement("div");
+        dom.setAttribute(el5, "class", "row mt");
+        var el6 = dom.createTextNode("\n                      ");
+        dom.appendChild(el5, el6);
+        var el6 = dom.createComment(" SERVER STATUS PANELS ");
+        dom.appendChild(el5, el6);
+        var el6 = dom.createTextNode("\n                        ");
+        dom.appendChild(el5, el6);
+        var el6 = dom.createElement("div");
+        dom.setAttribute(el6, "class", "col-md-4 col-sm-4 mb");
+        var el7 = dom.createTextNode("\n                          ");
+        dom.appendChild(el6, el7);
+        var el7 = dom.createElement("div");
+        dom.setAttribute(el7, "class", "white-panel pn donut-chart");
+        var el8 = dom.createTextNode("\n                            ");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createElement("div");
+        dom.setAttribute(el8, "class", "white-header");
+        var el9 = dom.createTextNode("\n                    ");
+        dom.appendChild(el8, el9);
+        var el9 = dom.createElement("h5");
+        var el10 = dom.createTextNode("SERVER LOAD");
+        dom.appendChild(el9, el10);
+        dom.appendChild(el8, el9);
+        var el9 = dom.createTextNode("\n                            ");
+        dom.appendChild(el8, el9);
+        dom.appendChild(el7, el8);
+        var el8 = dom.createTextNode("\n                ");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createElement("div");
+        dom.setAttribute(el8, "class", "row");
+        var el9 = dom.createTextNode("\n                  ");
+        dom.appendChild(el8, el9);
+        var el9 = dom.createElement("div");
+        dom.setAttribute(el9, "class", "col-sm-6 col-xs-6 goleft");
+        var el10 = dom.createTextNode("\n                    ");
+        dom.appendChild(el9, el10);
+        var el10 = dom.createElement("p");
+        var el11 = dom.createElement("i");
+        dom.setAttribute(el11, "class", "fa fa-database");
+        dom.appendChild(el10, el11);
+        var el11 = dom.createTextNode(" 70%");
+        dom.appendChild(el10, el11);
+        dom.appendChild(el9, el10);
+        var el10 = dom.createTextNode("\n                  ");
+        dom.appendChild(el9, el10);
+        dom.appendChild(el8, el9);
+        var el9 = dom.createTextNode("\n                            ");
+        dom.appendChild(el8, el9);
+        dom.appendChild(el7, el8);
+        var el8 = dom.createTextNode("\n                ");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createElement("canvas");
+        dom.setAttribute(el8, "id", "serverstatus01");
+        dom.setAttribute(el8, "height", "120");
+        dom.setAttribute(el8, "width", "120");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createTextNode("\n                \n                          ");
+        dom.appendChild(el7, el8);
+        dom.appendChild(el6, el7);
+        var el7 = dom.createComment("/grey-panel ");
+        dom.appendChild(el6, el7);
+        var el7 = dom.createTextNode("\n                        ");
+        dom.appendChild(el6, el7);
+        dom.appendChild(el5, el6);
+        var el6 = dom.createComment(" /col-md-4");
+        dom.appendChild(el5, el6);
+        var el6 = dom.createTextNode("\n                        \n\n                        ");
+        dom.appendChild(el5, el6);
+        var el6 = dom.createElement("div");
+        dom.setAttribute(el6, "class", "col-md-4 col-sm-4 mb");
+        var el7 = dom.createTextNode("\n                          ");
+        dom.appendChild(el6, el7);
+        var el7 = dom.createElement("div");
+        dom.setAttribute(el7, "class", "white-panel pn");
+        var el8 = dom.createTextNode("\n                            ");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createElement("div");
+        dom.setAttribute(el8, "class", "white-header");
+        var el9 = dom.createTextNode("\n                    ");
+        dom.appendChild(el8, el9);
+        var el9 = dom.createElement("h5");
+        var el10 = dom.createTextNode("TOP PRODUCT");
+        dom.appendChild(el9, el10);
+        dom.appendChild(el8, el9);
+        var el9 = dom.createTextNode("\n                            ");
+        dom.appendChild(el8, el9);
+        dom.appendChild(el7, el8);
+        var el8 = dom.createTextNode("\n                ");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createElement("div");
+        dom.setAttribute(el8, "class", "row");
+        var el9 = dom.createTextNode("\n                  ");
+        dom.appendChild(el8, el9);
+        var el9 = dom.createElement("div");
+        dom.setAttribute(el9, "class", "col-sm-6 col-xs-6 goleft");
+        var el10 = dom.createTextNode("\n                    ");
+        dom.appendChild(el9, el10);
+        var el10 = dom.createElement("p");
+        var el11 = dom.createElement("i");
+        dom.setAttribute(el11, "class", "fa fa-heart");
+        dom.appendChild(el10, el11);
+        var el11 = dom.createTextNode(" 122");
+        dom.appendChild(el10, el11);
+        dom.appendChild(el9, el10);
+        var el10 = dom.createTextNode("\n                  ");
+        dom.appendChild(el9, el10);
+        dom.appendChild(el8, el9);
+        var el9 = dom.createTextNode("\n                  ");
+        dom.appendChild(el8, el9);
+        var el9 = dom.createElement("div");
+        dom.setAttribute(el9, "class", "col-sm-6 col-xs-6");
+        dom.appendChild(el8, el9);
+        var el9 = dom.createTextNode("\n                            ");
+        dom.appendChild(el8, el9);
+        dom.appendChild(el7, el8);
+        var el8 = dom.createTextNode("\n                            ");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createElement("div");
+        dom.setAttribute(el8, "class", "centered");
+        var el9 = dom.createTextNode("\n                    ");
+        dom.appendChild(el8, el9);
+        var el9 = dom.createElement("img");
+        dom.setAttribute(el9, "src", "product.png");
+        dom.setAttribute(el9, "width", "120");
+        dom.appendChild(el8, el9);
+        var el9 = dom.createTextNode("\n                            ");
+        dom.appendChild(el8, el9);
+        dom.appendChild(el7, el8);
+        var el8 = dom.createTextNode("\n                          ");
+        dom.appendChild(el7, el8);
+        dom.appendChild(el6, el7);
+        var el7 = dom.createTextNode("\n                        ");
+        dom.appendChild(el6, el7);
+        dom.appendChild(el5, el6);
+        var el6 = dom.createComment(" /col-md-4 ");
+        dom.appendChild(el5, el6);
+        var el6 = dom.createTextNode("\n                        \n            ");
+        dom.appendChild(el5, el6);
+        var el6 = dom.createElement("div");
+        dom.setAttribute(el6, "class", "col-md-4 mb");
+        var el7 = dom.createTextNode("\n              ");
+        dom.appendChild(el6, el7);
+        var el7 = dom.createComment(" WHITE PANEL - TOP USER ");
+        dom.appendChild(el6, el7);
+        var el7 = dom.createTextNode("\n              ");
+        dom.appendChild(el6, el7);
+        var el7 = dom.createElement("div");
+        dom.setAttribute(el7, "class", "white-panel pn");
+        var el8 = dom.createTextNode("\n                ");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createElement("div");
+        dom.setAttribute(el8, "class", "white-header");
+        var el9 = dom.createTextNode("\n                  ");
+        dom.appendChild(el8, el9);
+        var el9 = dom.createElement("h5");
+        var el10 = dom.createTextNode("TOP USER IP");
+        dom.appendChild(el9, el10);
+        dom.appendChild(el8, el9);
+        var el9 = dom.createTextNode("\n                ");
+        dom.appendChild(el8, el9);
+        dom.appendChild(el7, el8);
+        var el8 = dom.createTextNode("\n                ");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createElement("p");
+        var el9 = dom.createElement("img");
+        dom.setAttribute(el9, "src", "ui-zac.jpg");
+        dom.setAttribute(el9, "class", "img-circle");
+        dom.setAttribute(el9, "width", "80");
+        dom.appendChild(el8, el9);
+        dom.appendChild(el7, el8);
+        var el8 = dom.createTextNode("\n                ");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createElement("p");
+        var el9 = dom.createElement("b");
+        dom.setAttribute(el9, "id", "maxIp");
+        var el10 = dom.createTextNode("0.0.0.0");
+        dom.appendChild(el9, el10);
+        dom.appendChild(el8, el9);
+        dom.appendChild(el7, el8);
+        var el8 = dom.createTextNode("\n                ");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createElement("div");
+        dom.setAttribute(el8, "class", "row");
+        var el9 = dom.createTextNode("\n                  ");
+        dom.appendChild(el8, el9);
+        var el9 = dom.createElement("div");
+        dom.setAttribute(el9, "class", "col-md-6");
+        dom.setAttribute(el9, "style", "width:100%");
+        var el10 = dom.createTextNode("\n                    ");
+        dom.appendChild(el9, el10);
+        var el10 = dom.createElement("p");
+        dom.setAttribute(el10, "class", "small mt");
+        var el11 = dom.createTextNode("Last Accessed On");
+        dom.appendChild(el10, el11);
+        dom.appendChild(el9, el10);
+        var el10 = dom.createTextNode("\n                    ");
+        dom.appendChild(el9, el10);
+        var el10 = dom.createElement("p");
+        dom.setAttribute(el10, "id", "maxIpDate");
+        var el11 = dom.createTextNode("2012");
+        dom.appendChild(el10, el11);
+        dom.appendChild(el9, el10);
+        var el10 = dom.createTextNode("\n                  ");
+        dom.appendChild(el9, el10);
+        dom.appendChild(el8, el9);
+        var el9 = dom.createTextNode("\n                ");
+        dom.appendChild(el8, el9);
+        dom.appendChild(el7, el8);
+        var el8 = dom.createTextNode("\n              ");
+        dom.appendChild(el7, el8);
+        dom.appendChild(el6, el7);
+        var el7 = dom.createTextNode("\n            ");
+        dom.appendChild(el6, el7);
+        dom.appendChild(el5, el6);
+        var el6 = dom.createComment(" /col-md-4 ");
+        dom.appendChild(el5, el6);
+        var el6 = dom.createTextNode("\n                        \n\n          ");
+        dom.appendChild(el5, el6);
+        dom.appendChild(el4, el5);
+        var el5 = dom.createComment(" /row ");
+        dom.appendChild(el4, el5);
+        var el5 = dom.createTextNode("\n                    \n                            \n          ");
+        dom.appendChild(el4, el5);
+        var el5 = dom.createElement("div");
+        dom.setAttribute(el5, "class", "row");
+        var el6 = dom.createTextNode("\n            ");
+        dom.appendChild(el5, el6);
+        var el6 = dom.createComment(" TWITTER PANEL ");
+        dom.appendChild(el5, el6);
+        var el6 = dom.createTextNode("\n            ");
+        dom.appendChild(el5, el6);
+        var el6 = dom.createElement("div");
+        dom.setAttribute(el6, "class", "col-md-4 mb");
+        var el7 = dom.createTextNode("\n                          ");
+        dom.appendChild(el6, el7);
+        var el7 = dom.createElement("div");
+        dom.setAttribute(el7, "class", "darkblue-panel pn");
+        var el8 = dom.createTextNode("\n                            ");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createElement("div");
+        dom.setAttribute(el8, "class", "darkblue-header");
+        var el9 = dom.createTextNode("\n                    ");
+        dom.appendChild(el8, el9);
+        var el9 = dom.createElement("h5");
+        var el10 = dom.createTextNode("DROPBOX STATICS");
+        dom.appendChild(el9, el10);
+        dom.appendChild(el8, el9);
+        var el9 = dom.createTextNode("\n                            ");
+        dom.appendChild(el8, el9);
+        dom.appendChild(el7, el8);
+        var el8 = dom.createTextNode("\n                ");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createElement("canvas");
+        dom.setAttribute(el8, "id", "serverstatus02");
+        dom.setAttribute(el8, "height", "120");
+        dom.setAttribute(el8, "width", "120");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createTextNode("\n                \n                ");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createElement("p");
+        var el9 = dom.createTextNode("April 17, 2014");
+        dom.appendChild(el8, el9);
+        dom.appendChild(el7, el8);
+        var el8 = dom.createTextNode("\n                ");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createElement("footer");
+        var el9 = dom.createTextNode("\n                  ");
+        dom.appendChild(el8, el9);
+        var el9 = dom.createElement("div");
+        dom.setAttribute(el9, "class", "pull-left");
+        var el10 = dom.createTextNode("\n                    ");
+        dom.appendChild(el9, el10);
+        var el10 = dom.createElement("h5");
+        var el11 = dom.createElement("i");
+        dom.setAttribute(el11, "class", "fa fa-hdd-o");
+        dom.appendChild(el10, el11);
+        var el11 = dom.createTextNode(" 17 GB");
+        dom.appendChild(el10, el11);
+        dom.appendChild(el9, el10);
+        var el10 = dom.createTextNode("\n                  ");
+        dom.appendChild(el9, el10);
+        dom.appendChild(el8, el9);
+        var el9 = dom.createTextNode("\n                  ");
+        dom.appendChild(el8, el9);
+        var el9 = dom.createElement("div");
+        dom.setAttribute(el9, "class", "pull-right");
+        var el10 = dom.createTextNode("\n                    ");
+        dom.appendChild(el9, el10);
+        var el10 = dom.createElement("h5");
+        var el11 = dom.createTextNode("60% Used");
+        dom.appendChild(el10, el11);
+        dom.appendChild(el9, el10);
+        var el10 = dom.createTextNode("\n                  ");
+        dom.appendChild(el9, el10);
+        dom.appendChild(el8, el9);
+        var el9 = dom.createTextNode("\n                ");
+        dom.appendChild(el8, el9);
+        dom.appendChild(el7, el8);
+        var el8 = dom.createTextNode("\n                          ");
+        dom.appendChild(el7, el8);
+        dom.appendChild(el6, el7);
+        var el7 = dom.createComment(" /darkblue panel ");
+        dom.appendChild(el6, el7);
+        var el7 = dom.createTextNode("\n            ");
+        dom.appendChild(el6, el7);
+        dom.appendChild(el5, el6);
+        var el6 = dom.createComment(" /col-md-4 ");
+        dom.appendChild(el5, el6);
+        var el6 = dom.createTextNode("\n            \n            \n            ");
+        dom.appendChild(el5, el6);
+        var el6 = dom.createElement("div");
+        dom.setAttribute(el6, "class", "col-md-4 mb");
+        var el7 = dom.createTextNode("\n              ");
+        dom.appendChild(el6, el7);
+        var el7 = dom.createComment(" INSTAGRAM PANEL ");
+        dom.appendChild(el6, el7);
+        var el7 = dom.createTextNode("\n              ");
+        dom.appendChild(el6, el7);
+        var el7 = dom.createElement("div");
+        dom.setAttribute(el7, "class", "instagram-panel pn");
+        var el8 = dom.createTextNode("\n                ");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createElement("i");
+        dom.setAttribute(el8, "class", "fa fa-instagram fa-4x");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createTextNode("\n                ");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createElement("p");
+        var el9 = dom.createTextNode("@THISISYOU");
+        dom.appendChild(el8, el9);
+        var el9 = dom.createElement("br");
+        dom.appendChild(el8, el9);
+        var el9 = dom.createTextNode("\n                  5 min. ago\n                ");
+        dom.appendChild(el8, el9);
+        dom.appendChild(el7, el8);
+        var el8 = dom.createTextNode("\n                ");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createElement("p");
+        var el9 = dom.createElement("i");
+        dom.setAttribute(el9, "class", "fa fa-comment");
+        dom.appendChild(el8, el9);
+        var el9 = dom.createTextNode(" 18 | ");
+        dom.appendChild(el8, el9);
+        var el9 = dom.createElement("i");
+        dom.setAttribute(el9, "class", "fa fa-heart");
+        dom.appendChild(el8, el9);
+        var el9 = dom.createTextNode(" 49");
+        dom.appendChild(el8, el9);
+        dom.appendChild(el7, el8);
+        var el8 = dom.createTextNode("\n              ");
+        dom.appendChild(el7, el8);
+        dom.appendChild(el6, el7);
+        var el7 = dom.createTextNode("\n            ");
+        dom.appendChild(el6, el7);
+        dom.appendChild(el5, el6);
+        var el6 = dom.createComment(" /col-md-4 ");
+        dom.appendChild(el5, el6);
+        var el6 = dom.createTextNode("\n            \n            ");
+        dom.appendChild(el5, el6);
+        var el6 = dom.createElement("div");
+        dom.setAttribute(el6, "class", "col-md-4 col-sm-4 mb");
+        var el7 = dom.createTextNode("\n              ");
+        dom.appendChild(el6, el7);
+        var el7 = dom.createComment(" REVENUE PANEL ");
+        dom.appendChild(el6, el7);
+        var el7 = dom.createTextNode("\n              ");
+        dom.appendChild(el6, el7);
+        var el7 = dom.createElement("div");
+        dom.setAttribute(el7, "class", "darkblue-panel pn");
+        var el8 = dom.createTextNode("\n                ");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createElement("div");
+        dom.setAttribute(el8, "class", "darkblue-header");
+        var el9 = dom.createTextNode("\n                  ");
+        dom.appendChild(el8, el9);
+        var el9 = dom.createElement("h5");
+        var el10 = dom.createTextNode("REVENUE");
+        dom.appendChild(el9, el10);
+        dom.appendChild(el8, el9);
+        var el9 = dom.createTextNode("\n                ");
+        dom.appendChild(el8, el9);
+        dom.appendChild(el7, el8);
+        var el8 = dom.createTextNode("\n                ");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createElement("div");
+        dom.setAttribute(el8, "class", "chart mt");
+        var el9 = dom.createTextNode("\n                  ");
+        dom.appendChild(el8, el9);
+        var el9 = dom.createElement("div");
+        dom.setAttribute(el9, "class", "sparkline");
+        dom.setAttribute(el9, "data-type", "line");
+        dom.setAttribute(el9, "data-resize", "true");
+        dom.setAttribute(el9, "data-height", "75");
+        dom.setAttribute(el9, "data-width", "90%");
+        dom.setAttribute(el9, "data-line-width", "1");
+        dom.setAttribute(el9, "data-line-color", "#fff");
+        dom.setAttribute(el9, "data-spot-color", "#fff");
+        dom.setAttribute(el9, "data-fill-color", "");
+        dom.setAttribute(el9, "data-highlight-line-color", "#fff");
+        dom.setAttribute(el9, "data-spot-radius", "4");
+        dom.setAttribute(el9, "data-data", "[200,135,667,333,526,996,564,123,890,464,655]");
+        dom.appendChild(el8, el9);
+        var el9 = dom.createTextNode("\n                ");
+        dom.appendChild(el8, el9);
+        dom.appendChild(el7, el8);
+        var el8 = dom.createTextNode("\n                ");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createElement("p");
+        dom.setAttribute(el8, "class", "mt");
+        var el9 = dom.createElement("b");
+        var el10 = dom.createTextNode("$ 17,980");
+        dom.appendChild(el9, el10);
+        dom.appendChild(el8, el9);
+        var el9 = dom.createElement("br");
+        dom.appendChild(el8, el9);
+        var el9 = dom.createTextNode("Month Income");
+        dom.appendChild(el8, el9);
+        dom.appendChild(el7, el8);
+        var el8 = dom.createTextNode("\n              ");
+        dom.appendChild(el7, el8);
+        dom.appendChild(el6, el7);
+        var el7 = dom.createTextNode("\n            ");
+        dom.appendChild(el6, el7);
+        dom.appendChild(el5, el6);
+        var el6 = dom.createComment(" /col-md-4 ");
+        dom.appendChild(el5, el6);
+        var el6 = dom.createTextNode("\n            \n          ");
+        dom.appendChild(el5, el6);
+        dom.appendChild(el4, el5);
+        var el5 = dom.createComment(" /row ");
+        dom.appendChild(el4, el5);
+        var el5 = dom.createTextNode("\n          \n      \n          \n                  ");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createComment(" /col-lg-9 END SECTION MIDDLE ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n                  \n              ");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("/row ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n          ");
+        dom.appendChild(el2, el3);
         dom.appendChild(el1, el2);
-        var el2 = dom.createTextNode("\n");
+        var el2 = dom.createTextNode("\n\n\n      ");
         dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
         dom.appendChild(el0, el1);
         return el0;
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
         var morphs = new Array(1);
-        morphs[0] = dom.createMorphAt(dom.childAt(fragment, [0]), 1, 1);
+        morphs[0] = dom.createMorphAt(dom.childAt(fragment, [3, 1, 1, 1]), 1, 1);
         return morphs;
       },
-      statements: [["block", "link-to", ["recommend"], [], 0, null, ["loc", [null, [2, 1], [2, 70]]]]],
+      statements: [["block", "link-to", ["recommend"], ["class", "btn btn-primary btn-lg btn-block"], 0, null, ["loc", [null, [10, 15], [10, 125]]]]],
       locals: [],
       templates: [child0]
     };
@@ -612,8 +1260,7 @@ define("r-s-ember/templates/recommend", ["exports"], function (exports) {
     return {
       meta: {
         "fragmentReason": {
-          "name": "missing-wrapper",
-          "problems": ["multiple-nodes", "wrong-type"]
+          "name": "triple-curlies"
         },
         "revision": "Ember@2.5.1",
         "loc": {
@@ -623,8 +1270,8 @@ define("r-s-ember/templates/recommend", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 10,
-            "column": 0
+            "line": 12,
+            "column": 10
           }
         },
         "moduleName": "r-s-ember/templates/recommend.hbs"
@@ -637,37 +1284,49 @@ define("r-s-ember/templates/recommend", ["exports"], function (exports) {
         var el0 = dom.createDocumentFragment();
         var el1 = dom.createTextNode("\n");
         dom.appendChild(el0, el1);
-        var el1 = dom.createElement("h3");
-        var el2 = dom.createTextNode("Upload Pdf");
+        var el1 = dom.createElement("section");
+        dom.setAttribute(el1, "id", "main-content");
+        var el2 = dom.createTextNode("\n    ");
         dom.appendChild(el1, el2);
-        dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n\n");
-        dom.appendChild(el0, el1);
-        var el1 = dom.createComment("");
-        dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n\n");
-        dom.appendChild(el0, el1);
-        var el1 = dom.createElement("div");
-        var el2 = dom.createTextNode("\n	");
-        dom.appendChild(el1, el2);
-        var el2 = dom.createElement("canvas");
-        dom.setAttribute(el2, "id", "myChart");
-        dom.setAttribute(el2, "width", "400");
-        dom.setAttribute(el2, "height", "400");
+        var el2 = dom.createElement("section");
+        dom.setAttribute(el2, "class", "wrapper");
+        var el3 = dom.createTextNode("\n		");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("h3");
+        var el4 = dom.createTextNode("Upload Pdf");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n\n		");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n\n		");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("div");
+        var el4 = dom.createTextNode("\n			");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("canvas");
+        dom.setAttribute(el4, "id", "myChart");
+        dom.setAttribute(el4, "width", "400");
+        dom.setAttribute(el4, "height", "400");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n		");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n	");
+        dom.appendChild(el2, el3);
         dom.appendChild(el1, el2);
         var el2 = dom.createTextNode("\n");
         dom.appendChild(el1, el2);
-        dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n\n");
         dom.appendChild(el0, el1);
         return el0;
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
         var morphs = new Array(1);
-        morphs[0] = dom.createMorphAt(fragment, 3, 3, contextualElement);
+        morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1, 1]), 3, 3);
         return morphs;
       },
-      statements: [["content", "pdf-upload", ["loc", [null, [4, 0], [4, 14]]]]],
+      statements: [["content", "pdf-upload", ["loc", [null, [6, 2], [6, 16]]]]],
       locals: [],
       templates: []
     };
@@ -705,7 +1364,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("r-s-ember/app")["default"].create({"name":"r-s-ember","version":"0.0.0+e9995cc5"});
+  require("r-s-ember/app")["default"].create({"name":"r-s-ember","version":"0.0.0+9f576864"});
 }
 
 /* jshint ignore:end */

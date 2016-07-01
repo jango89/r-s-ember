@@ -1,3 +1,9 @@
+@import url("style-responsive.css");
+@import url("style.css");
+@import url("table-responsive.css");
+@import url("to-do.css");
+@import url("zabuto_calendar.css");
+
 #takeToRecommend{
 	text-align: center;
 }

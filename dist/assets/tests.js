@@ -320,7 +320,7 @@ define('r-s-ember/tests/routes/index.jshint', ['exports'], function (exports) {
   QUnit.module('JSHint | routes/index.js');
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
-    assert.ok(true, 'routes/index.js should pass jshint.');
+    assert.ok(false, 'routes/index.js should pass jshint.\nroutes/index.js: line 18, col 38, Expected \'===\' and instead saw \'==\'.\nroutes/index.js: line 17, col 45, \'error\' is defined but never used.\nroutes/index.js: line 17, col 37, \'status\' is defined but never used.\nroutes/index.js: line 5, col 9, \'$\' is not defined.\nroutes/index.js: line 6, col 13, \'$\' is not defined.\nroutes/index.js: line 19, col 27, \'$\' is not defined.\nroutes/index.js: line 20, col 26, \'$\' is not defined.\nroutes/index.js: line 21, col 26, \'$\' is not defined.\nroutes/index.js: line 22, col 26, \'$\' is not defined.\nroutes/index.js: line 23, col 26, \'$\' is not defined.\nroutes/index.js: line 24, col 26, \'$\' is not defined.\nroutes/index.js: line 25, col 26, \'$\' is not defined.\nroutes/index.js: line 26, col 26, \'$\' is not defined.\n\n13 errors');
   });
 });
 define('r-s-ember/tests/routes/recommend.jshint', ['exports'], function (exports) {
