@@ -58,6 +58,9 @@ export default EmberUploader.FileField.extend({
 				        }
 				    }
 				});
+				$('html, body').animate({
+					        scrollTop: $("#myChart").offset().top
+					    }, 2000);
 			}, error => {
 			  // Handle failure
 			});

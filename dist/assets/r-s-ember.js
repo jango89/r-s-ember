@@ -85,6 +85,9 @@ define('r-s-ember/components/pdf-upload', ['exports', 'ember', 'ember-uploader']
 							}
 						}
 					});
+					$('html, body').animate({
+						scrollTop: $("#myChart").offset().top
+					}, 2000);
 				}, function (error) {
 					// Handle failure
 				});
@@ -94,7 +97,64 @@ define('r-s-ember/components/pdf-upload', ['exports', 'ember', 'ember-uploader']
 	});
 });
 define('r-s-ember/controllers/recommend', ['exports', 'ember'], function (exports, _ember) {
-	exports['default'] = _ember['default'].Controller.extend({});
+	exports['default'] = _ember['default'].Controller.extend({
+		actions: {
+			recommend: function recommend(model) {
+				if (model.get('skills') != undefined) {
+					var modelVal = {
+						skills: model.get('skills')
+					};
+					$.ajax({
+
+						url: "http://localhost:8082/psapi/search",
+						// Tell jQuery we're expecting JSONP
+						dataType: "json",
+						type: 'post',
+						crossDomain: true,
+						contentType: "application/json; charset=utf-8",
+						data: JSON.stringify(modelVal),
+						success: function success(data) {
+							var labels = [];
+							var dataSets = [];
+							for (var i = 0; i < data.length; i++) {
+								labels.push(data[i]["label"]);
+								dataSets.push(data[i]["score"] * 1000);
+							}
+							var ctx = document.getElementById("myChart");
+							var myChart = new Chart(ctx, {
+								type: 'bar',
+								data: {
+									labels: labels,
+									datasets: [{
+										label: 'Score matching your profile',
+										data: dataSets,
+										backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(255, 206, 86, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(153, 102, 255, 0.2)', 'rgba(255, 159, 64, 0.2)'],
+										borderColor: ['rgba(255,99,132,1)', 'rgba(54, 162, 235, 1)', 'rgba(255, 206, 86, 1)', 'rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)', 'rgba(255, 159, 64, 1)'],
+										borderWidth: 1
+									}]
+								},
+								options: {
+									scales: {
+										yAxes: [{
+											ticks: {
+												beginAtZero: true
+											}
+										}]
+									}
+								}
+							});
+							$('html, body').animate({
+								scrollTop: $("#myChart").offset().top
+							}, 2000);
+						},
+						error: function error(xhr, status, _error) {
+							console.log(_error);
+						}
+					});
+				}
+			}
+		}
+	});
 });
 define('r-s-ember/helpers/pluralize', ['exports', 'ember-inflector/lib/helpers/pluralize'], function (exports, _emberInflectorLibHelpersPluralize) {
   exports['default'] = _emberInflectorLibHelpersPluralize['default'];
@@ -261,7 +321,8 @@ define("r-s-ember/instance-initializers/ember-data", ["exports", "ember-data/-pr
 });
 define('r-s-ember/models/recommend', ['exports', 'ember-data/model', 'ember-data/attr'], function (exports, _emberDataModel, _emberDataAttr) {
   exports['default'] = _emberDataModel['default'].extend({
-    firstName: (0, _emberDataAttr['default'])('string')
+    firstName: (0, _emberDataAttr['default'])('string'),
+    skills: (0, _emberDataAttr['default'])('string')
   });
 });
 define('r-s-ember/resolver', ['exports', 'ember-resolver'], function (exports, _emberResolver) {
@@ -276,6 +337,7 @@ define('r-s-ember/router', ['exports', 'ember', 'r-s-ember/config/environment'],
   Router.map(function () {
     this.route('recommend');
     this.route('error');
+    this.route('search');
   });
 
   exports['default'] = Router;
@@ -308,6 +370,14 @@ define("r-s-ember/routes/index", ["exports", "ember"], function (exports, _ember
 							$('#rec_status_p').text(window.jsonPResponse.recommendations + " recommendations done till now");
 							$('#maxIp').text(window.jsonPResponse.maxHitIp);
 							$('#maxIpDate').text(new Date(window.jsonPResponse.maxHitValue));
+							$('#maxHit').text(window.jsonPResponse.maxHitCourse);
+							$('#userCount').text(window.jsonPResponse.userCount + " Visitors");
+							$('#lastDateVisited').text(window.jsonPResponse.lastDateVisited);
+							$('#lastCourseSelected').text(window.jsonPResponse.lastCourseSelected);
+							$('#matchScore').text("Match Score of " + window.jsonPResponse.matchScore);
+							$('#recommendTimeAvg').text(window.jsonPResponse.recommendTimeAvg);
+							$('#recommendPdf').text(window.jsonPResponse.recommendPdf);
+							$('#recommendSearch').text(window.jsonPResponse.recommendSearch);
 						}
 					}
 				});
@@ -333,6 +403,9 @@ define('r-s-ember/routes/recommend', ['exports', 'ember'], function (exports, _e
 		}
 
 	});
+});
+define('r-s-ember/routes/search', ['exports', 'ember'], function (exports, _ember) {
+  exports['default'] = _ember['default'].Route.extend({});
 });
 define('r-s-ember/serializers/application', ['exports', 'ember-data/serializers/json-api'], function (exports, _emberDataSerializersJsonApi) {
    exports['default'] = _emberDataSerializersJsonApi['default'].extend({
@@ -615,7 +688,7 @@ define("r-s-ember/templates/index", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 159,
+            "line": 166,
             "column": 0
           }
         },
@@ -813,7 +886,7 @@ define("r-s-ember/templates/index", ["exports"], function (exports) {
         var el9 = dom.createTextNode("\n                    ");
         dom.appendChild(el8, el9);
         var el9 = dom.createElement("h5");
-        var el10 = dom.createTextNode("SERVER LOAD");
+        var el10 = dom.createTextNode("Distinct Visitors Today");
         dom.appendChild(el9, el10);
         dom.appendChild(el8, el9);
         var el9 = dom.createTextNode("\n                            ");
@@ -830,6 +903,7 @@ define("r-s-ember/templates/index", ["exports"], function (exports) {
         var el10 = dom.createTextNode("\n                    ");
         dom.appendChild(el9, el10);
         var el10 = dom.createElement("p");
+        dom.setAttribute(el10, "id", "userCount");
         var el11 = dom.createElement("i");
         dom.setAttribute(el11, "class", "fa fa-database");
         dom.appendChild(el10, el11);
@@ -842,14 +916,20 @@ define("r-s-ember/templates/index", ["exports"], function (exports) {
         var el9 = dom.createTextNode("\n                            ");
         dom.appendChild(el8, el9);
         dom.appendChild(el7, el8);
-        var el8 = dom.createTextNode("\n                ");
+        var el8 = dom.createTextNode("\n                             ");
         dom.appendChild(el7, el8);
-        var el8 = dom.createElement("canvas");
-        dom.setAttribute(el8, "id", "serverstatus01");
-        dom.setAttribute(el8, "height", "120");
-        dom.setAttribute(el8, "width", "120");
+        var el8 = dom.createElement("div");
+        dom.setAttribute(el8, "class", "centered");
+        var el9 = dom.createTextNode("\n                    ");
+        dom.appendChild(el8, el9);
+        var el9 = dom.createElement("img");
+        dom.setAttribute(el9, "src", "http://amazonautonation.com/wp-content/uploads/2015/11/10574697_330195383842590_453268607_n.png");
+        dom.setAttribute(el9, "width", "120");
+        dom.appendChild(el8, el9);
+        var el9 = dom.createTextNode("\n                            ");
+        dom.appendChild(el8, el9);
         dom.appendChild(el7, el8);
-        var el8 = dom.createTextNode("\n                \n                          ");
+        var el8 = dom.createTextNode("\n					                \n                          ");
         dom.appendChild(el7, el8);
         dom.appendChild(el6, el7);
         var el7 = dom.createComment("/grey-panel ");
@@ -874,7 +954,7 @@ define("r-s-ember/templates/index", ["exports"], function (exports) {
         var el9 = dom.createTextNode("\n                    ");
         dom.appendChild(el8, el9);
         var el9 = dom.createElement("h5");
-        var el10 = dom.createTextNode("TOP PRODUCT");
+        var el10 = dom.createTextNode("TOP Hit Course");
         dom.appendChild(el9, el10);
         dom.appendChild(el8, el9);
         var el9 = dom.createTextNode("\n                            ");
@@ -891,6 +971,7 @@ define("r-s-ember/templates/index", ["exports"], function (exports) {
         var el10 = dom.createTextNode("\n                    ");
         dom.appendChild(el9, el10);
         var el10 = dom.createElement("p");
+        dom.setAttribute(el10, "id", "maxHit");
         var el11 = dom.createElement("i");
         dom.setAttribute(el11, "class", "fa fa-heart");
         dom.appendChild(el10, el11);
@@ -915,7 +996,7 @@ define("r-s-ember/templates/index", ["exports"], function (exports) {
         var el9 = dom.createTextNode("\n                    ");
         dom.appendChild(el8, el9);
         var el9 = dom.createElement("img");
-        dom.setAttribute(el9, "src", "product.png");
+        dom.setAttribute(el9, "src", "http://sdittcollege.org/images/courses.png");
         dom.setAttribute(el9, "width", "120");
         dom.appendChild(el8, el9);
         var el9 = dom.createTextNode("\n                            ");
@@ -1037,22 +1118,29 @@ define("r-s-ember/templates/index", ["exports"], function (exports) {
         var el9 = dom.createTextNode("\n                    ");
         dom.appendChild(el8, el9);
         var el9 = dom.createElement("h5");
-        var el10 = dom.createTextNode("DROPBOX STATICS");
+        var el10 = dom.createTextNode("Last Visitor");
         dom.appendChild(el9, el10);
         dom.appendChild(el8, el9);
         var el9 = dom.createTextNode("\n                            ");
         dom.appendChild(el8, el9);
         dom.appendChild(el7, el8);
-        var el8 = dom.createTextNode("\n                ");
+        var el8 = dom.createTextNode("\n               ");
         dom.appendChild(el7, el8);
-        var el8 = dom.createElement("canvas");
-        dom.setAttribute(el8, "id", "serverstatus02");
-        dom.setAttribute(el8, "height", "120");
-        dom.setAttribute(el8, "width", "120");
+        var el8 = dom.createElement("div");
+        dom.setAttribute(el8, "class", "centered");
+        var el9 = dom.createTextNode("\n                    ");
+        dom.appendChild(el8, el9);
+        var el9 = dom.createElement("img");
+        dom.setAttribute(el9, "src", "https://cdn4.iconfinder.com/data/icons/green-shopper/1068/user.png");
+        dom.setAttribute(el9, "width", "120");
+        dom.appendChild(el8, el9);
+        var el9 = dom.createTextNode("\n                            ");
+        dom.appendChild(el8, el9);
         dom.appendChild(el7, el8);
         var el8 = dom.createTextNode("\n                \n                ");
         dom.appendChild(el7, el8);
         var el8 = dom.createElement("p");
+        dom.setAttribute(el8, "id", "lastDateVisited");
         var el9 = dom.createTextNode("April 17, 2014");
         dom.appendChild(el8, el9);
         dom.appendChild(el7, el8);
@@ -1062,14 +1150,16 @@ define("r-s-ember/templates/index", ["exports"], function (exports) {
         var el9 = dom.createTextNode("\n                  ");
         dom.appendChild(el8, el9);
         var el9 = dom.createElement("div");
-        dom.setAttribute(el9, "class", "pull-left");
+        dom.setAttribute(el9, "class", "");
         var el10 = dom.createTextNode("\n                    ");
         dom.appendChild(el9, el10);
         var el10 = dom.createElement("h5");
+        dom.setAttribute(el10, "id", "lastCourseSelected");
+        dom.setAttribute(el10, "style", "color: white;");
         var el11 = dom.createElement("i");
         dom.setAttribute(el11, "class", "fa fa-hdd-o");
         dom.appendChild(el10, el11);
-        var el11 = dom.createTextNode(" 17 GB");
+        var el11 = dom.createTextNode("SS");
         dom.appendChild(el10, el11);
         dom.appendChild(el9, el10);
         var el10 = dom.createTextNode("\n                  ");
@@ -1078,11 +1168,13 @@ define("r-s-ember/templates/index", ["exports"], function (exports) {
         var el9 = dom.createTextNode("\n                  ");
         dom.appendChild(el8, el9);
         var el9 = dom.createElement("div");
-        dom.setAttribute(el9, "class", "pull-right");
+        dom.setAttribute(el9, "class", "");
         var el10 = dom.createTextNode("\n                    ");
         dom.appendChild(el9, el10);
         var el10 = dom.createElement("h5");
-        var el11 = dom.createTextNode("60% Used");
+        dom.setAttribute(el10, "id", "matchScore");
+        dom.setAttribute(el10, "style", "color:white;");
+        var el11 = dom.createTextNode("5");
         dom.appendChild(el10, el11);
         dom.appendChild(el9, el10);
         var el10 = dom.createTextNode("\n                  ");
@@ -1104,42 +1196,63 @@ define("r-s-ember/templates/index", ["exports"], function (exports) {
         var el6 = dom.createTextNode("\n            \n            \n            ");
         dom.appendChild(el5, el6);
         var el6 = dom.createElement("div");
-        dom.setAttribute(el6, "class", "col-md-4 mb");
+        dom.setAttribute(el6, "class", "col-md-4 col-sm-4 mb");
         var el7 = dom.createTextNode("\n              ");
         dom.appendChild(el6, el7);
-        var el7 = dom.createComment(" INSTAGRAM PANEL ");
+        var el7 = dom.createComment(" REVENUE PANEL ");
         dom.appendChild(el6, el7);
         var el7 = dom.createTextNode("\n              ");
         dom.appendChild(el6, el7);
         var el7 = dom.createElement("div");
-        dom.setAttribute(el7, "class", "instagram-panel pn");
+        dom.setAttribute(el7, "class", "darkblue-panel pn");
         var el8 = dom.createTextNode("\n                ");
         dom.appendChild(el7, el8);
-        var el8 = dom.createElement("i");
-        dom.setAttribute(el8, "class", "fa fa-instagram fa-4x");
+        var el8 = dom.createElement("div");
+        dom.setAttribute(el8, "class", "darkblue-header");
+        var el9 = dom.createTextNode("\n                  ");
+        dom.appendChild(el8, el9);
+        var el9 = dom.createElement("h5");
+        var el10 = dom.createTextNode("Number of Searches");
+        dom.appendChild(el9, el10);
+        dom.appendChild(el8, el9);
+        var el9 = dom.createTextNode("\n                ");
+        dom.appendChild(el8, el9);
+        dom.appendChild(el7, el8);
+        var el8 = dom.createTextNode("\n                ");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createElement("div");
+        dom.setAttribute(el8, "class", "centered");
+        var el9 = dom.createTextNode("\n                    ");
+        dom.appendChild(el8, el9);
+        var el9 = dom.createElement("img");
+        dom.setAttribute(el9, "src", "http://www.newdesignfile.com/postpic/2011/05/data-document-icon_244034.png");
+        dom.setAttribute(el9, "width", "120");
+        dom.appendChild(el8, el9);
+        var el9 = dom.createTextNode("\n                            ");
+        dom.appendChild(el8, el9);
         dom.appendChild(el7, el8);
         var el8 = dom.createTextNode("\n                ");
         dom.appendChild(el7, el8);
         var el8 = dom.createElement("p");
-        var el9 = dom.createTextNode("@THISISYOU");
+        dom.setAttribute(el8, "class", "mt");
+        dom.setAttribute(el8, "style", "color:white;");
+        var el9 = dom.createElement("b");
+        dom.setAttribute(el9, "id", "recommendPdf");
+        var el10 = dom.createTextNode("17");
+        dom.appendChild(el9, el10);
+        dom.appendChild(el8, el9);
+        var el9 = dom.createTextNode(" via Pdf Upload");
         dom.appendChild(el8, el9);
         var el9 = dom.createElement("br");
         dom.appendChild(el8, el9);
-        var el9 = dom.createTextNode("\n                  5 min. ago\n                ");
+        var el9 = dom.createTextNode("\n                ");
         dom.appendChild(el8, el9);
-        dom.appendChild(el7, el8);
-        var el8 = dom.createTextNode("\n                ");
-        dom.appendChild(el7, el8);
-        var el8 = dom.createElement("p");
-        var el9 = dom.createElement("i");
-        dom.setAttribute(el9, "class", "fa fa-comment");
+        var el9 = dom.createElement("b");
+        dom.setAttribute(el9, "id", "recommendSearch");
+        var el10 = dom.createTextNode("0");
+        dom.appendChild(el9, el10);
         dom.appendChild(el8, el9);
-        var el9 = dom.createTextNode(" 18 | ");
-        dom.appendChild(el8, el9);
-        var el9 = dom.createElement("i");
-        dom.setAttribute(el9, "class", "fa fa-heart");
-        dom.appendChild(el8, el9);
-        var el9 = dom.createTextNode(" 49");
+        var el9 = dom.createTextNode(" via Normal");
         dom.appendChild(el8, el9);
         dom.appendChild(el7, el8);
         var el8 = dom.createTextNode("\n              ");
@@ -1169,7 +1282,7 @@ define("r-s-ember/templates/index", ["exports"], function (exports) {
         var el9 = dom.createTextNode("\n                  ");
         dom.appendChild(el8, el9);
         var el9 = dom.createElement("h5");
-        var el10 = dom.createTextNode("REVENUE");
+        var el10 = dom.createTextNode("Average Recommend Time");
         dom.appendChild(el9, el10);
         dom.appendChild(el8, el9);
         var el9 = dom.createTextNode("\n                ");
@@ -1178,37 +1291,29 @@ define("r-s-ember/templates/index", ["exports"], function (exports) {
         var el8 = dom.createTextNode("\n                ");
         dom.appendChild(el7, el8);
         var el8 = dom.createElement("div");
-        dom.setAttribute(el8, "class", "chart mt");
-        var el9 = dom.createTextNode("\n                  ");
+        dom.setAttribute(el8, "class", "centered");
+        var el9 = dom.createTextNode("\n                    ");
         dom.appendChild(el8, el9);
-        var el9 = dom.createElement("div");
-        dom.setAttribute(el9, "class", "sparkline");
-        dom.setAttribute(el9, "data-type", "line");
-        dom.setAttribute(el9, "data-resize", "true");
-        dom.setAttribute(el9, "data-height", "75");
-        dom.setAttribute(el9, "data-width", "90%");
-        dom.setAttribute(el9, "data-line-width", "1");
-        dom.setAttribute(el9, "data-line-color", "#fff");
-        dom.setAttribute(el9, "data-spot-color", "#fff");
-        dom.setAttribute(el9, "data-fill-color", "");
-        dom.setAttribute(el9, "data-highlight-line-color", "#fff");
-        dom.setAttribute(el9, "data-spot-radius", "4");
-        dom.setAttribute(el9, "data-data", "[200,135,667,333,526,996,564,123,890,464,655]");
+        var el9 = dom.createElement("img");
+        dom.setAttribute(el9, "src", "http://icons.iconseeker.com/png/fullsize/isabi/time-machine-shaped.png");
+        dom.setAttribute(el9, "width", "120");
         dom.appendChild(el8, el9);
-        var el9 = dom.createTextNode("\n                ");
+        var el9 = dom.createTextNode("\n                            ");
         dom.appendChild(el8, el9);
         dom.appendChild(el7, el8);
         var el8 = dom.createTextNode("\n                ");
         dom.appendChild(el7, el8);
         var el8 = dom.createElement("p");
         dom.setAttribute(el8, "class", "mt");
+        dom.setAttribute(el8, "style", "color:white;");
         var el9 = dom.createElement("b");
-        var el10 = dom.createTextNode("$ 17,980");
+        dom.setAttribute(el9, "id", "recommendTimeAvg");
+        var el10 = dom.createTextNode("17");
         dom.appendChild(el9, el10);
         dom.appendChild(el8, el9);
         var el9 = dom.createElement("br");
         dom.appendChild(el8, el9);
-        var el9 = dom.createTextNode("Month Income");
+        var el9 = dom.createTextNode("seconds");
         dom.appendChild(el8, el9);
         dom.appendChild(el7, el8);
         var el8 = dom.createTextNode("\n              ");
@@ -1270,7 +1375,7 @@ define("r-s-ember/templates/recommend", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 12,
+            "line": 24,
             "column": 10
           }
         },
@@ -1293,14 +1398,48 @@ define("r-s-ember/templates/recommend", ["exports"], function (exports) {
         var el3 = dom.createTextNode("\n		");
         dom.appendChild(el2, el3);
         var el3 = dom.createElement("h3");
-        var el4 = dom.createTextNode("Upload Pdf");
+        var el4 = dom.createTextNode("Recommend via Uploading Pdf");
         dom.appendChild(el3, el4);
         dom.appendChild(el2, el3);
         var el3 = dom.createTextNode("\n\n		");
         dom.appendChild(el2, el3);
         var el3 = dom.createComment("");
         dom.appendChild(el2, el3);
-        var el3 = dom.createTextNode("\n\n		");
+        var el3 = dom.createTextNode("\n\n	");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n\n	 ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("section");
+        dom.setAttribute(el2, "class", "wrapper");
+        var el3 = dom.createTextNode("\n		");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("h3");
+        var el4 = dom.createTextNode("Recommend via Normal Search");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n		");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("form");
+        var el4 = dom.createTextNode("\n		  ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n		  ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n		");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n	\n	");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n\n	 ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("section");
+        dom.setAttribute(el2, "class", "wrapper");
+        var el3 = dom.createTextNode("\n		");
         dom.appendChild(el2, el3);
         var el3 = dom.createElement("div");
         var el4 = dom.createTextNode("\n			");
@@ -1322,11 +1461,62 @@ define("r-s-ember/templates/recommend", ["exports"], function (exports) {
         return el0;
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-        var morphs = new Array(1);
-        morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1, 1]), 3, 3);
+        var element0 = dom.childAt(fragment, [1]);
+        var element1 = dom.childAt(element0, [3, 3]);
+        var morphs = new Array(4);
+        morphs[0] = dom.createMorphAt(dom.childAt(element0, [1]), 3, 3);
+        morphs[1] = dom.createElementMorph(element1);
+        morphs[2] = dom.createMorphAt(element1, 1, 1);
+        morphs[3] = dom.createMorphAt(element1, 3, 3);
         return morphs;
       },
-      statements: [["content", "pdf-upload", ["loc", [null, [6, 2], [6, 16]]]]],
+      statements: [["content", "pdf-upload", ["loc", [null, [6, 2], [6, 16]]]], ["element", "action", ["recommend", ["get", "model", ["loc", [null, [12, 29], [12, 34]]]]], ["on", "submit"], ["loc", [null, [12, 8], [12, 48]]]], ["inline", "textarea", [], ["value", ["subexpr", "@mut", [["get", "model.skills", ["loc", [null, [13, 21], [13, 33]]]]], [], []], "cols", "80", "rows", "6", "placeholder", "Skills OR Educational background OR Experience (keywords)"], ["loc", [null, [13, 4], [13, 126]]]], ["inline", "input", [], ["type", "submit", "value", ["subexpr", "@mut", [["get", "Search", ["loc", [null, [14, 32], [14, 38]]]]], [], []], "class", "btn btn-primary"], ["loc", [null, [14, 4], [14, 64]]]]],
+      locals: [],
+      templates: []
+    };
+  })());
+});
+define("r-s-ember/templates/search", ["exports"], function (exports) {
+  exports["default"] = Ember.HTMLBars.template((function () {
+    return {
+      meta: {
+        "fragmentReason": {
+          "name": "missing-wrapper",
+          "problems": ["wrong-type"]
+        },
+        "revision": "Ember@2.5.1",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 2,
+            "column": 0
+          }
+        },
+        "moduleName": "r-s-ember/templates/search.hbs"
+      },
+      isEmpty: false,
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var morphs = new Array(1);
+        morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+        dom.insertBoundary(fragment, 0);
+        return morphs;
+      },
+      statements: [["content", "outlet", ["loc", [null, [1, 0], [1, 10]]]]],
       locals: [],
       templates: []
     };
@@ -1364,7 +1554,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("r-s-ember/app")["default"].create({"name":"r-s-ember","version":"0.0.0+9f576864"});
+  require("r-s-ember/app")["default"].create({"name":"r-s-ember","version":"0.0.0+5f7bfe4f"});
 }
 
 /* jshint ignore:end */

@@ -24,6 +24,14 @@ export default Ember.Route.extend({
 						 $('#rec_status_p').text(window.jsonPResponse.recommendations+" recommendations done till now");
 						 $('#maxIp').text(window.jsonPResponse.maxHitIp);
 						 $('#maxIpDate').text(new Date(window.jsonPResponse.maxHitValue));
+						 $('#maxHit').text(window.jsonPResponse.maxHitCourse);
+						 $('#userCount').text(window.jsonPResponse.userCount+ " Visitors");
+						 $('#lastDateVisited').text(window.jsonPResponse.lastDateVisited);
+						 $('#lastCourseSelected').text(window.jsonPResponse.lastCourseSelected);
+						 $('#matchScore').text("Match Score of "+window.jsonPResponse.matchScore);
+						 $('#recommendTimeAvg').text(window.jsonPResponse.recommendTimeAvg);
+						 $('#recommendPdf').text(window.jsonPResponse.recommendPdf);
+						 $('#recommendSearch').text(window.jsonPResponse.recommendSearch);
 			    	 }
 			    }
 			});

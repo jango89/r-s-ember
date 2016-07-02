@@ -22,7 +22,7 @@ define('r-s-ember/tests/components/pdf-upload.jshint', ['exports'], function (ex
   QUnit.module('JSHint | components/pdf-upload.js');
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
-    assert.ok(false, 'components/pdf-upload.js should pass jshint.\ncomponents/pdf-upload.js: line 22, col 57, Missing semicolon.\ncomponents/pdf-upload.js: line 25, col 21, \'myChart\' is defined but never used.\ncomponents/pdf-upload.js: line 61, col 16, \'error\' is defined but never used.\ncomponents/pdf-upload.js: line 25, col 35, \'Chart\' is not defined.\n\n4 errors');
+    assert.ok(false, 'components/pdf-upload.js should pass jshint.\ncomponents/pdf-upload.js: line 22, col 57, Missing semicolon.\ncomponents/pdf-upload.js: line 25, col 21, \'myChart\' is defined but never used.\ncomponents/pdf-upload.js: line 64, col 16, \'error\' is defined but never used.\ncomponents/pdf-upload.js: line 25, col 35, \'Chart\' is not defined.\ncomponents/pdf-upload.js: line 61, col 17, \'$\' is not defined.\ncomponents/pdf-upload.js: line 62, col 40, \'$\' is not defined.\n\n6 errors');
   });
 });
 define('r-s-ember/tests/controllers/recommend.jshint', ['exports'], function (exports) {
@@ -31,7 +31,7 @@ define('r-s-ember/tests/controllers/recommend.jshint', ['exports'], function (ex
   QUnit.module('JSHint | controllers/recommend.js');
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
-    assert.ok(true, 'controllers/recommend.js should pass jshint.');
+    assert.ok(false, 'controllers/recommend.js should pass jshint.\ncontrollers/recommend.js: line 6, col 38, Expected \'!==\' and instead saw \'!=\'.\ncontrollers/recommend.js: line 24, col 65, Missing semicolon.\ncontrollers/recommend.js: line 27, col 29, \'myChart\' is defined but never used.\ncontrollers/recommend.js: line 10, col 17, \'$\' is not defined.\ncontrollers/recommend.js: line 63, col 26, \'$\' is not defined.\ncontrollers/recommend.js: line 64, col 40, \'$\' is not defined.\ncontrollers/recommend.js: line 27, col 43, \'Chart\' is not defined.\n\n7 errors');
   });
 });
 define('r-s-ember/tests/helpers/destroy-app', ['exports', 'ember'], function (exports, _ember) {
@@ -320,7 +320,7 @@ define('r-s-ember/tests/routes/index.jshint', ['exports'], function (exports) {
   QUnit.module('JSHint | routes/index.js');
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
-    assert.ok(false, 'routes/index.js should pass jshint.\nroutes/index.js: line 18, col 38, Expected \'===\' and instead saw \'==\'.\nroutes/index.js: line 17, col 45, \'error\' is defined but never used.\nroutes/index.js: line 17, col 37, \'status\' is defined but never used.\nroutes/index.js: line 5, col 9, \'$\' is not defined.\nroutes/index.js: line 6, col 13, \'$\' is not defined.\nroutes/index.js: line 19, col 27, \'$\' is not defined.\nroutes/index.js: line 20, col 26, \'$\' is not defined.\nroutes/index.js: line 21, col 26, \'$\' is not defined.\nroutes/index.js: line 22, col 26, \'$\' is not defined.\nroutes/index.js: line 23, col 26, \'$\' is not defined.\nroutes/index.js: line 24, col 26, \'$\' is not defined.\nroutes/index.js: line 25, col 26, \'$\' is not defined.\nroutes/index.js: line 26, col 26, \'$\' is not defined.\n\n13 errors');
+    assert.ok(false, 'routes/index.js should pass jshint.\nroutes/index.js: line 18, col 38, Expected \'===\' and instead saw \'==\'.\nroutes/index.js: line 17, col 45, \'error\' is defined but never used.\nroutes/index.js: line 17, col 37, \'status\' is defined but never used.\nroutes/index.js: line 5, col 9, \'$\' is not defined.\nroutes/index.js: line 6, col 13, \'$\' is not defined.\nroutes/index.js: line 19, col 27, \'$\' is not defined.\nroutes/index.js: line 20, col 26, \'$\' is not defined.\nroutes/index.js: line 21, col 26, \'$\' is not defined.\nroutes/index.js: line 22, col 26, \'$\' is not defined.\nroutes/index.js: line 23, col 26, \'$\' is not defined.\nroutes/index.js: line 24, col 26, \'$\' is not defined.\nroutes/index.js: line 25, col 26, \'$\' is not defined.\nroutes/index.js: line 26, col 26, \'$\' is not defined.\nroutes/index.js: line 27, col 26, \'$\' is not defined.\nroutes/index.js: line 28, col 26, \'$\' is not defined.\nroutes/index.js: line 29, col 26, \'$\' is not defined.\nroutes/index.js: line 30, col 26, \'$\' is not defined.\nroutes/index.js: line 31, col 26, \'$\' is not defined.\nroutes/index.js: line 32, col 26, \'$\' is not defined.\nroutes/index.js: line 33, col 26, \'$\' is not defined.\nroutes/index.js: line 34, col 26, \'$\' is not defined.\n\n21 errors');
   });
 });
 define('r-s-ember/tests/routes/recommend.jshint', ['exports'], function (exports) {
@@ -330,6 +330,15 @@ define('r-s-ember/tests/routes/recommend.jshint', ['exports'], function (exports
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
     assert.ok(false, 'routes/recommend.js should pass jshint.\nroutes/recommend.js: line 5, col 23, \'transition\' is defined but never used.\nroutes/recommend.js: line 5, col 16, \'model\' is defined but never used.\n\n2 errors');
+  });
+});
+define('r-s-ember/tests/routes/search.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | routes/search.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'routes/search.js should pass jshint.');
   });
 });
 define('r-s-ember/tests/serializers/application.jshint', ['exports'], function (exports) {
@@ -512,6 +521,27 @@ define('r-s-ember/tests/unit/routes/recommend-test.jshint', ['exports'], functio
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
     assert.ok(true, 'unit/routes/recommend-test.js should pass jshint.');
+  });
+});
+define('r-s-ember/tests/unit/routes/search-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
+
+  (0, _emberQunit.moduleFor)('route:search', 'Unit | Route | search', {
+    // Specify the other units that are required for this test.
+    // needs: ['controller:foo']
+  });
+
+  (0, _emberQunit.test)('it exists', function (assert) {
+    var route = this.subject();
+    assert.ok(route);
+  });
+});
+define('r-s-ember/tests/unit/routes/search-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint | unit/routes/search-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'unit/routes/search-test.js should pass jshint.');
   });
 });
 define('r-s-ember/tests/unit/routes/users-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
