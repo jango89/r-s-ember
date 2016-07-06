@@ -21,6 +21,13 @@ export default EmberUploader.FileField.extend({
 					labels.push(data[i]["label"]);
 					dataSets.push(data[i]["score"]*1000)
 				}
+				if(dataSets.length == 0){
+					$('.close_on_click').show();
+					$('#myChart').hide();
+					return;
+				}
+				$('.close_on_click').hide();
+				$('#myChart').show();
 				var ctx = document.getElementById("myChart");
 				var myChart = new Chart(ctx, {
 				    type: 'bar',

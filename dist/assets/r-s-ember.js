@@ -62,6 +62,13 @@ define('r-s-ember/components/pdf-upload', ['exports', 'ember', 'ember-uploader']
 						labels.push(data[i]["label"]);
 						dataSets.push(data[i]["score"] * 1000);
 					}
+					if (dataSets.length == 0) {
+						$('.close_on_click').show();
+						$('#myChart').hide();
+						return;
+					}
+					$('.close_on_click').hide();
+					$('#myChart').show();
 					var ctx = document.getElementById("myChart");
 					var myChart = new Chart(ctx, {
 						type: 'bar',
@@ -120,6 +127,13 @@ define('r-s-ember/controllers/recommend', ['exports', 'ember'], function (export
 								labels.push(data[i]["label"]);
 								dataSets.push(data[i]["score"] * 1000);
 							}
+							if (dataSets.length == 0) {
+								$('#myChart').hide();
+								$('.close_on_click').show();
+								return;
+							}
+							$('#myChart').show();
+							$('.close_on_click').hide();
 							var ctx = document.getElementById("myChart");
 							var myChart = new Chart(ctx, {
 								type: 'bar',
@@ -539,7 +553,7 @@ define("r-s-ember/templates/error", ["exports"], function (exports) {
             },
             "end": {
               "line": 8,
-              "column": 60
+              "column": 101
             }
           },
           "moduleName": "r-s-ember/templates/error.hbs"
@@ -630,7 +644,7 @@ define("r-s-ember/templates/error", ["exports"], function (exports) {
         dom.insertBoundary(fragment, 0);
         return morphs;
       },
-      statements: [["content", "outlet", ["loc", [null, [1, 0], [1, 10]]]], ["block", "link-to", ["recommend"], [], 0, null, ["loc", [null, [8, 3], [8, 72]]]]],
+      statements: [["content", "outlet", ["loc", [null, [1, 0], [1, 10]]]], ["block", "link-to", ["recommend"], ["class", "btn btn-primary btn-lg btn-block"], 0, null, ["loc", [null, [8, 3], [8, 113]]]]],
       locals: [],
       templates: [child0]
     };
@@ -1375,7 +1389,7 @@ define("r-s-ember/templates/recommend", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 24,
+            "line": 28,
             "column": 10
           }
         },
@@ -1439,6 +1453,34 @@ define("r-s-ember/templates/recommend", ["exports"], function (exports) {
         dom.appendChild(el1, el2);
         var el2 = dom.createElement("section");
         dom.setAttribute(el2, "class", "wrapper");
+        var el3 = dom.createTextNode("\n		");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("div");
+        dom.setAttribute(el3, "class", "alert alert-danger alert-dismissible close_on_click");
+        dom.setAttribute(el3, "role", "alert");
+        dom.setAttribute(el3, "style", "display:none; width:50%");
+        var el4 = dom.createTextNode("\n			");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("button");
+        dom.setAttribute(el4, "type", "button");
+        dom.setAttribute(el4, "class", "close");
+        dom.setAttribute(el4, "data-dismiss", "alert");
+        dom.setAttribute(el4, "aria-label", "Close");
+        var el5 = dom.createElement("span");
+        dom.setAttribute(el5, "aria-hidden", "true");
+        var el6 = dom.createTextNode("×");
+        dom.appendChild(el5, el6);
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n			");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("strong");
+        var el5 = dom.createTextNode("Error!");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode(" There are no courses matching your skills.\n		");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
         var el3 = dom.createTextNode("\n		");
         dom.appendChild(el2, el3);
         var el3 = dom.createElement("div");
@@ -1554,7 +1596,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("r-s-ember/app")["default"].create({"name":"r-s-ember","version":"0.0.0+5f7bfe4f"});
+  require("r-s-ember/app")["default"].create({"name":"r-s-ember","version":"0.0.0+66e44831"});
 }
 
 /* jshint ignore:end */

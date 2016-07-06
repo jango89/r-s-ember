@@ -23,6 +23,13 @@ export default Ember.Controller.extend({
 							labels.push(data[i]["label"]);
 							dataSets.push(data[i]["score"]*1000)
 						}
+						if(dataSets.length == 0){
+							$('#myChart').hide();
+							$('.close_on_click').show();
+							return;
+						}
+						$('#myChart').show();
+						$('.close_on_click').hide();
 						var ctx = document.getElementById("myChart");
 						var myChart = new Chart(ctx, {
 						    type: 'bar',
