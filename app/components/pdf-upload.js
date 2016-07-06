@@ -21,6 +21,7 @@ export default EmberUploader.FileField.extend({
 					labels.push(data[i]["label"]);
 					dataSets.push(data[i]["score"]*1000)
 				}
+				$('.close_on_click_error').hide();
 				if(dataSets.length == 0){
 					$('.close_on_click').show();
 					$('#myChart').hide();
@@ -69,6 +70,7 @@ export default EmberUploader.FileField.extend({
 					        scrollTop: $("#myChart").offset().top
 					    }, 2000);
 			}, error => {
+				$('.close_on_click_error').show();
 			  // Handle failure
 			});
 	    }

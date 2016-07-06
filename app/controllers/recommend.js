@@ -23,6 +23,7 @@ export default Ember.Controller.extend({
 							labels.push(data[i]["label"]);
 							dataSets.push(data[i]["score"]*1000)
 						}
+						$('.close_on_click_error').hide();
 						if(dataSets.length == 0){
 							$('#myChart').hide();
 							$('.close_on_click').show();
@@ -73,6 +74,7 @@ export default Ember.Controller.extend({
 				    },
 				    error:function(xhr, status, error){
 				    	 console.log(error);
+						$('.close_on_click_error').show();
 				    }
 				});	
 			}
