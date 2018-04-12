@@ -1,7 +1,13 @@
 # R-s-ember
 
-This README outlines the details of collaborating on this Ember application.
-A short introduction of this app could easily go here.
+Recommendation system Frontend for Heriot Watt PG Course.
+
+This is an open source project which i am planning to do for helping students to find the most suitable courses for their Post Graduation. Right now the project is completely focussed on Heriot Watt University, as i did my PG from there :)
+
+However I wanted to completely automate this process for maximum number of universities all around the world.
+
+The application is built using ember-cli. I believe Ember has the highest learning curve among most of the new Javascipt frameworks.
+However by doing this in Ember, I can learn the same and can also contribute to open source community.
 
 ## Prerequisites
 
